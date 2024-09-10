@@ -54,3 +54,15 @@
     margin-right: auto;
 
 }
+
+#div-of-Error{
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    color : darkred;
+    text-align: center;
+    font-size: 1.2rem;
+    visibility:hidden
+
+}

@@ -4,6 +4,7 @@ import {Button} from "react-bootstrap";
 import './css_files/userPopUp.css'
 import userIcon from './user.png'
 interface State{
+    thereIsAnError: boolean;
      isModalOpen: boolean;
      newUserId: string;
      newUserName: string;
@@ -14,6 +15,7 @@ class UserPopUp extends Component<{}, State> {
         super(props);
 
         this.state = {
+            thereIsAnError: false,
             isModalOpen: false,
             newUserId: "",
             newUserName: "",
@@ -33,14 +35,35 @@ class UserPopUp extends Component<{}, State> {
         }
     }
 
+    somethingIsNull = ():boolean =>{
+        if(this.state.newUserName=== '' || this.state.newUserId === '' || this.state.newUserDescription ==='')
+        {
+            return true
+        }
+        else
+        {
+            return false
+        }
+    }
     PrintAndChangeState = () => {
-        this.setState({
-            isModalOpen: true
-        })
-        alert(`Add new User ${this.state.newUserId}, ${this.state.newUserName}, ${this.state.newUserDescription}`);
+        if (isNaN(parseInt(this.state.newUserId,10)) || this.somethingIsNull()===true) {
+            this.setState({
+                thereIsAnError: true
+
+            })
+        }
+
+        else {
+            this.setState({
+                isModalOpen: true
+            })
+            alert(`Add new User ${this.state.newUserId}, ${this.state.newUserName}, ${this.state.newUserDescription}`);
+        }
+        {/*fix the Error functionality.*/}
     }
 
     handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
         this.setState({
             newUserId: e.target.value
         })
@@ -79,18 +102,13 @@ class UserPopUp extends Component<{}, State> {
                 <div className='div-spaces'></div>
                 <h1 className={'text-of-titles'}>Id:</h1>
                 <div className='div-spaces'></div>
-                    <input
-                        type='text'
-                        className='input-group-text style-adding-to-text'
-                        id='input_of_user_id'
-                        value={this.state.newUserId}
-                        onChange={this.handleIdChange}
-                    />
+                    <input type='text' className='input-group-text style-adding-to-text' value={this.state.newUserId} onChange={this.handleIdChange}></input>
                     <div className='div-spaces'></div>
                     <h1 className={'text-of-titles'}>Description:</h1>
                     <div className='div-spaces'></div>
                     <input type='text' className={'input-group-text style-adding-to-text'} value={this.state.newUserDescription} onChange={this.handleDescriptionChange}></input>
                 <div className='div-spaces'></div>
+                    <div id={'div-of-Error'} >There was a problem, please try again.</div>
                 </form>
             </Modal.Body>
             <Button onClick={this.PrintAndChangeState}>
