@@ -40,13 +40,23 @@ class UserPopUp extends Component<{}, State> {
         alert(`Add new User ${this.state.newUserId}, ${this.state.newUserName}, ${this.state.newUserDescription}`);
     }
 
-    handleIdChange(e: React.ChangeEvent<HTMLInputElement>) {
+    handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
             newUserId: e.target.value
         })
     }
 
+    handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            newUserName: e.target.value
+        })
+    }
 
+    handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            newUserDescription: e.target.value
+        })
+    }
     render() {
         return (
             <React.Fragment>
@@ -65,7 +75,7 @@ class UserPopUp extends Component<{}, State> {
                 <div className='div-spaces'></div>
                 <h1 className={'text-of-titles'}>User name:</h1>
                 <div className='div-spaces'></div>
-                <input type='text' className={'input-group-text style-adding-to-text'} id='input_of_user_name'></input>
+                <input type='text' className={'input-group-text style-adding-to-text'} id='input_of_user_name' value={this.state.newUserName} onChange={this.handleNameChange}></input>
                 <div className='div-spaces'></div>
                 <h1 className={'text-of-titles'}>Id:</h1>
                 <div className='div-spaces'></div>
@@ -79,7 +89,7 @@ class UserPopUp extends Component<{}, State> {
                     <div className='div-spaces'></div>
                     <h1 className={'text-of-titles'}>Description:</h1>
                     <div className='div-spaces'></div>
-                    <input type='text' className={'input-group-text style-adding-to-text'} value={this.state.newUserDescription}></input>
+                    <input type='text' className={'input-group-text style-adding-to-text'} value={this.state.newUserDescription} onChange={this.handleDescriptionChange}></input>
                 <div className='div-spaces'></div>
                 </form>
             </Modal.Body>
