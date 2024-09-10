@@ -8,6 +8,8 @@
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
 }
+
+
 @keyframes Header_animation {
     from {font-size: x-small}
     to {font-size: xx-large}

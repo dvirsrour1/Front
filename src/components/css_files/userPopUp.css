@@ -1,49 +1,56 @@
+.h1{
 
-@keyframes Button_animation_hover {
-    from {background-color: black}
-    to {background-color: coral}
 }
-
-.button {
-    display: inline-block;
-    border-radius: 4px;
-    background-color: black;
-    border: none;
-    color: #FFFFFF;
-    text-align: center;
-    font-size: 14px;
-    padding: 10px;
-    width: 100px;
-    transition: all 0.5s;
-    cursor: pointer;
-    margin: 5px;
-}
-
-.button:hover {
-    background-color: coral;
-    transition: 0.5s;
-}
-.button span {
-    cursor: pointer;
-    display: inline-block;
+.img {
+    display: block;
     position: relative;
-    transition: 0.5s;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 22px;
+}
+.div-spaces{
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    height: 0.7rem;
+    color: #FFFFFF;
 }
 
-.button span:after {
-    content: '\00bb';
-    position: absolute;
-    opacity: 0;
-    top: 0;
-    right: -20px;
-    transition: 0.5s;
+.div{
+
+    display: flex;
+    background-color: black;
+    font-size: 10px;
+    height: 0.13rem;
+    border-radius: 8px;
+    justify-content: center;
+    opacity: 0.08;
 }
 
-.button:hover span {
-    padding-right: 25px;
+.text-of-titles{
+    text-align: center;
+    font-size: 1.2rem;
+    color: coral;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    opacity: 0.3
 }
-
-.button:hover span:after {
+.text-of-titles:hover{
     opacity: 1;
-    right: 0;
+    font-size: 1.4rem;
+    animation-name: example_text_animation;
+}
+
+@keyframes example_text_animation {
+    from {
+
+    }
+}
+.style-adding-to-text{
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+
 }
