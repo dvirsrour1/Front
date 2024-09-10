@@ -3,12 +3,18 @@ import Modal from 'react-bootstrap/Modal';
 import {Button} from "react-bootstrap";
 import './css_files/userPopUp.css'
 import userIcon from './user.png'
+import axios from 'axios';
 interface State{
     thereIsAnError: boolean;
      isModalOpen: boolean;
      newUserId: string;
      newUserName: string;
      newUserDescription: string;
+}
+interface User{
+    name: string;
+    id: string;
+    description: string;
 }
 class UserPopUp extends Component<{}, State> {
     constructor(props: {}) {
@@ -21,6 +27,8 @@ class UserPopUp extends Component<{}, State> {
             newUserName: "",
             newUserDescription: ""
         }
+
+
     }
      ChangeState = () => {
         if (this.state.isModalOpen) {
@@ -49,16 +57,26 @@ class UserPopUp extends Component<{}, State> {
         if (isNaN(parseInt(this.state.newUserId,10)) || this.somethingIsNull()===true) {
             this.setState({
                 thereIsAnError: true
-
             })
+            alert('there is an error')
         }
 
         else {
             this.setState({
                 isModalOpen: true
             })
-            alert(`Add new User ${this.state.newUserId}, ${this.state.newUserName}, ${this.state.newUserDescription}`);
+            const newUser: User = {
+                name: this.state.newUserName,
+                description: this.state.newUserDescription,
+                id: this.state.newUserId
+            }
+            axios.post('http://localhost:9090/NewUser', newUser).then(response => {
+                alert(response.data.message)
+            }).catch(error => {
+                alert('Error');
+            })
         }
+        {/*fix axion*/}
         {/*fix the Error functionality.*/}
     }
 
