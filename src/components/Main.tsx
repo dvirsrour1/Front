@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
 import {Buffer} from "node:buffer";
 import './css_files/Main.css';
-import './userPopUp'
-import UserPopUp from "./userPopUp";
+import './UserAddingPopup'
+import UserAddingPopup from "./UserAddingPopup";
 class Main extends Component {
     render() {
         return (
             <React.Fragment>
                 <h1 className="Header">Welcome to our HTTP System!</h1>
-                <UserPopUp></UserPopUp>
+                <UserAddingPopup></UserAddingPopup>
+                <button className="button"><span>Add new Task</span></button>
                 <button className="button"><span>See all Users</span></button>
                 <button className="button"><span>See all Tasks</span></button>
                 <button className="button"><span>Delete a User</span></button>

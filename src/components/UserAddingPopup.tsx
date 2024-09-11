@@ -1,9 +1,10 @@
 import React, {Component, useState} from 'react';
 import Modal from 'react-bootstrap/Modal';
 import {Button} from "react-bootstrap";
-import './css_files/userPopUp.css'
+import './css_files/UserAddingPopup.css'
 import userIcon from './user.png'
-import axios from 'axios';
+import axios from "axios";
+
 interface State{
     thereIsAnError: boolean;
      isModalOpen: boolean;
@@ -16,7 +17,7 @@ interface User{
     id: string;
     description: string;
 }
-class UserPopUp extends Component<{}, State> {
+class UserAddingPopup extends Component<{}, State> {
     constructor(props: {}) {
         super(props);
 
@@ -43,6 +44,15 @@ class UserPopUp extends Component<{}, State> {
         }
     }
 
+    userNameHasNumbers = (nameOfUser: string): boolean => {
+        for (let i = 0; i < nameOfUser.length; i++) {
+            if(parseInt(nameOfUser.charAt(i)))
+            {
+                return true
+            }
+        }
+        return false;
+    }
     somethingIsNull = ():boolean =>{
         if(this.state.newUserName=== '' || this.state.newUserId === '' || this.state.newUserDescription ==='')
         {
@@ -54,7 +64,7 @@ class UserPopUp extends Component<{}, State> {
         }
     }
     PrintAndChangeState = () => {
-        if (isNaN(parseInt(this.state.newUserId,10)) || this.somethingIsNull()===true) {
+        if (isNaN(parseInt(this.state.newUserId,10)) || this.somethingIsNull() || this.userNameHasNumbers(this.state.newUserName)) {
             this.setState({
                 thereIsAnError: true
             })
@@ -67,13 +77,20 @@ class UserPopUp extends Component<{}, State> {
             })
             const newUser: User = {
                 name: this.state.newUserName,
-                description: this.state.newUserDescription,
-                id: this.state.newUserId
+                id: this.state.newUserId,
+                description: this.state.newUserDescription
             }
             axios.post('http://localhost:9090/NewUser', newUser).then(response => {
                 alert(response.data.message)
+                console.log(response.data.message)
             }).catch(error => {
-                alert('Error');
+                if(error.message.statusText==='underdefined')
+                {
+                    alert("User added!")
+                }
+                else{
+                    console.log(error.message)
+                }
             })
         }
         {/*fix axion*/}
@@ -116,11 +133,11 @@ class UserPopUp extends Component<{}, State> {
                 <div className='div-spaces'></div>
                 <h1 className={'text-of-titles'}>User name:</h1>
                 <div className='div-spaces'></div>
-                <input type='text' className={'input-group-text style-adding-to-text'} id='input_of_user_name' value={this.state.newUserName} onChange={this.handleNameChange}></input>
+                <input type='text' className={'input-group-text style-adding-to-text'} id='input_of_user_name' value={this.state.newUserName} onChange={this.handleNameChange} autoComplete='name' ></input>
                 <div className='div-spaces'></div>
                 <h1 className={'text-of-titles'}>Id:</h1>
                 <div className='div-spaces'></div>
-                    <input type='text' className='input-group-text style-adding-to-text' value={this.state.newUserId} onChange={this.handleIdChange}></input>
+                    <input type='password' className='input-group-text style-adding-to-text' value={this.state.newUserId} onChange={this.handleIdChange} ></input>
                     <div className='div-spaces'></div>
                     <h1 className={'text-of-titles'}>Description:</h1>
                     <div className='div-spaces'></div>
@@ -140,4 +157,4 @@ class UserPopUp extends Component<{}, State> {
     }
 }
 
-export default UserPopUp;
+export default UserAddingPopup;
