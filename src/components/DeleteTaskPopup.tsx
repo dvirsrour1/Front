@@ -4,40 +4,32 @@ import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
 import axios from "axios";
 
-interface UserUpdating{
-    userId:string;
-    description: string;
-}
 interface State{
     thereIsAnError: boolean;
     isModalOpen: boolean;
-    UsersId: string;
-    description:string;
+    nameOfTaskState: string;
 }
 
+interface nameOfTaskObject{
+    nameOfTask: string;
+}
 
-class UpdateUserPopup extends Component<{},State> {
+class DeleteTaskPopup extends Component<{},State> {
     constructor(props: {}) {
         super(props);
         this.state = {
             isModalOpen: false,
             thereIsAnError: false,
-            UsersId: '',
-            description: ''
+            nameOfTaskState: '',
         }
     }
 
-    handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
+    handleNameOfTaskChange = (event: ChangeEvent<HTMLInputElement>) => {
         this.setState({
-            UsersId: event.target.value
+            nameOfTaskState: event.target.value
         })
     }
 
-    handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            description: e.target.value
-        })
-    }
 
     ChangeState = () =>{
         this.setState({
@@ -46,14 +38,14 @@ class UpdateUserPopup extends Component<{},State> {
     }
 
     somethingIsNull = ():boolean =>{
-        if(this.state.UsersId=== '' || this.state.description === '')
+        if(this.state.nameOfTaskState=== '')
         {
             return true
         }
         return false
     }
     PrintAndChangeState = () => {
-        if (isNaN(parseInt(this.state.UsersId,10)) || this.somethingIsNull()) {
+        if (this.somethingIsNull()) {
             this.setState({
                 thereIsAnError: true
             })
@@ -64,14 +56,13 @@ class UpdateUserPopup extends Component<{},State> {
             this.setState({
                 isModalOpen: true
             })
-            const UpdatingUser: UserUpdating = {
-                userId: this.state.UsersId,
-                description: this.state.description
+            const nameOfTaskObject: nameOfTaskObject = {
+                nameOfTask: this.state.nameOfTaskState
             }
-            axios.post('http://localhost:9090/UpdateUserDescription', UpdatingUser).then(response => {
-                alert('User updated succesefuly')
+            axios.delete(`http://localhost:9090/DeleteTask`, {data: nameOfTaskObject}).then(response => {
+                alert('Task Deleted successfully')
             }).catch(error => {
-                    console.log(error.message)
+                console.log(error.message)
             })
         }
         {/*fix the Error functionality.*/}
@@ -79,7 +70,7 @@ class UpdateUserPopup extends Component<{},State> {
     render() {
         return (
             <React.Fragment>
-                <button className="button" onClick={this.ChangeState}><span>Updating a User</span></button>
+                <button className="button" onClick={this.ChangeState}><span>Delete a Task</span></button>
 
 
                 <Modal show={this.state.isModalOpen} onHide={this.ChangeState}>
@@ -92,13 +83,9 @@ class UpdateUserPopup extends Component<{},State> {
                             <div className='div'></div>
                             {/*<Modal.Title className={'modal-title'}>New User</Modal.Title>*/}
                             <div className='div-spaces'></div>
-                            <h1 className={'text-of-titles'}>User's Id:</h1>
+                            <h1 className={'text-of-titles'}>Name of Task:</h1>
                             <div className='div-spaces'></div>
-                            <input type='password' className='input-group-text style-adding-to-text' value={this.state.UsersId} onChange={this.handleIdChange} ></input>
-                            <div className='div-spaces'></div>
-                            <h1 className={'text-of-titles'}>New description:</h1>
-                            <div className='div-spaces'></div>
-                            <input type='text' className={'input-group-text style-adding-to-text'} value={this.state.description} onChange={this.handleDescriptionChange}></input>
+                            <input type='text' className='input-group-text style-adding-to-text' value={this.state.nameOfTaskState} onChange={this.handleNameOfTaskChange} ></input>
                             <div className='div-spaces'></div>
                             <div id={'div-of-Error'} >There was a problem, please try again.</div>
                         </form>
@@ -114,4 +101,4 @@ class UpdateUserPopup extends Component<{},State> {
     }
 }
 
-export default UpdateUserPopup;
+export default DeleteTaskPopup;

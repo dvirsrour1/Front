@@ -1,7 +1,7 @@
 import React, {Component, useState} from 'react';
 import Modal from 'react-bootstrap/Modal';
 import {Button} from "react-bootstrap";
-import './css_files/UserAddingPopup.css'
+import './css_files/Popup.css'
 import userIcon from './user.png'
 import axios from "axios";
 
@@ -31,18 +31,12 @@ class UserAddingPopup extends Component<{}, State> {
 
 
     }
-     ChangeState = () => {
-        if (this.state.isModalOpen) {
-            this.setState({
-                isModalOpen: false
-            })
-        }
-        else{
-            this.setState({
-                isModalOpen: true
-            })
-        }
+    ChangeState = () =>{
+        this.setState({
+            isModalOpen: !this.state.isModalOpen
+        })
     }
+
 
     userNameHasNumbers = (nameOfUser: string): boolean => {
         for (let i = 0; i < nameOfUser.length; i++) {
@@ -81,19 +75,11 @@ class UserAddingPopup extends Component<{}, State> {
                 description: this.state.newUserDescription
             }
             axios.post('http://localhost:9090/NewUser', newUser).then(response => {
-                alert(response.data.message)
-                console.log(response.data.message)
+                alert("User added successfully");
             }).catch(error => {
-                if(error.message.statusText==='underdefined')
-                {
-                    alert("User added!")
-                }
-                else{
                     console.log(error.message)
-                }
             })
         }
-        {/*fix axion*/}
         {/*fix the Error functionality.*/}
     }
 

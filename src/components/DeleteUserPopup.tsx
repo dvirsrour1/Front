@@ -4,26 +4,20 @@ import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
 import axios from "axios";
 
-interface UserUpdating{
-    userId:string;
-    description: string;
-}
 interface State{
     thereIsAnError: boolean;
     isModalOpen: boolean;
     UsersId: string;
-    description:string;
 }
 
 
-class UpdateUserPopup extends Component<{},State> {
+class DeleteUserPopup extends Component<{},State> {
     constructor(props: {}) {
         super(props);
         this.state = {
             isModalOpen: false,
             thereIsAnError: false,
             UsersId: '',
-            description: ''
         }
     }
 
@@ -31,13 +25,9 @@ class UpdateUserPopup extends Component<{},State> {
         this.setState({
             UsersId: event.target.value
         })
+
     }
 
-    handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            description: e.target.value
-        })
-    }
 
     ChangeState = () =>{
         this.setState({
@@ -46,7 +36,7 @@ class UpdateUserPopup extends Component<{},State> {
     }
 
     somethingIsNull = ():boolean =>{
-        if(this.state.UsersId=== '' || this.state.description === '')
+        if(this.state.UsersId=== '')
         {
             return true
         }
@@ -64,14 +54,10 @@ class UpdateUserPopup extends Component<{},State> {
             this.setState({
                 isModalOpen: true
             })
-            const UpdatingUser: UserUpdating = {
-                userId: this.state.UsersId,
-                description: this.state.description
-            }
-            axios.post('http://localhost:9090/UpdateUserDescription', UpdatingUser).then(response => {
-                alert('User updated succesefuly')
+            axios.delete(`http://localhost:9090/DeleteUser/${this.state.UsersId}`).then(response => {
+                alert('User Deleted successfully')
             }).catch(error => {
-                    console.log(error.message)
+                console.log(error.message)
             })
         }
         {/*fix the Error functionality.*/}
@@ -79,7 +65,7 @@ class UpdateUserPopup extends Component<{},State> {
     render() {
         return (
             <React.Fragment>
-                <button className="button" onClick={this.ChangeState}><span>Updating a User</span></button>
+                <button className="button" onClick={this.ChangeState}><span>Delete a User</span></button>
 
 
                 <Modal show={this.state.isModalOpen} onHide={this.ChangeState}>
@@ -96,10 +82,6 @@ class UpdateUserPopup extends Component<{},State> {
                             <div className='div-spaces'></div>
                             <input type='password' className='input-group-text style-adding-to-text' value={this.state.UsersId} onChange={this.handleIdChange} ></input>
                             <div className='div-spaces'></div>
-                            <h1 className={'text-of-titles'}>New description:</h1>
-                            <div className='div-spaces'></div>
-                            <input type='text' className={'input-group-text style-adding-to-text'} value={this.state.description} onChange={this.handleDescriptionChange}></input>
-                            <div className='div-spaces'></div>
                             <div id={'div-of-Error'} >There was a problem, please try again.</div>
                         </form>
                     </Modal.Body>
@@ -114,4 +96,4 @@ class UpdateUserPopup extends Component<{},State> {
     }
 }
 
-export default UpdateUserPopup;
+export default DeleteUserPopup;
