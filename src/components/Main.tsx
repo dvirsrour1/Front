@@ -13,13 +13,15 @@ class Main extends Component {
             <React.Fragment>
 
                 <h1 className="Header">Welcome to our HTTP System!</h1>
+                <div className="container">
                 <UserAddingPopup></UserAddingPopup>
                 <TaskAddingPopup></TaskAddingPopup>
-                <button className="button"><span>See all Users</span></button>
-                <button className="button"><span>See all Tasks</span></button>
+                <button className="button"><span>Show all Users</span></button>
+                <button className="button"><span>Show all Tasks</span></button>
                 <DeleteUserPopup></DeleteUserPopup>
                 <DeleteTaskPopup></DeleteTaskPopup>
                 <UpdateUserPopup></UpdateUserPopup>
+                </div>
             </React.Fragment>
         );
     }

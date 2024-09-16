@@ -55,14 +55,9 @@
 
 }
 
-#div-of-Error{
-    display: block;
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    color : darkred;
+.div-of-Error{
     text-align: center;
     font-size: 1.2rem;
-    visibility:hidden
-
+    color: red;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }

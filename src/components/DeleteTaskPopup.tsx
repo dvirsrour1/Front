@@ -49,7 +49,6 @@ class DeleteTaskPopup extends Component<{},State> {
             this.setState({
                 thereIsAnError: true
             })
-            alert('there is an error')
         }
 
         else {
@@ -87,7 +86,10 @@ class DeleteTaskPopup extends Component<{},State> {
                             <div className='div-spaces'></div>
                             <input type='text' className='input-group-text style-adding-to-text' value={this.state.nameOfTaskState} onChange={this.handleNameOfTaskChange} ></input>
                             <div className='div-spaces'></div>
-                            <div id={'div-of-Error'} >There was a problem, please try again.</div>
+                            <div className={'div-of-Error'}
+                                 style={{visibility: this.state.thereIsAnError ? 'visible' : 'hidden'}}>There was a
+                                problem, please try again.
+                            </div>
                         </form>
                     </Modal.Body>
                     <Button onClick={this.PrintAndChangeState}>
