@@ -11,7 +11,7 @@ class Main extends Component {
     render() {
         return (
             <React.Fragment>
-
+                <div className="All-App">
                 <h1 className="Header">Welcome to our HTTP System!</h1>
                 <div className="container">
                 <UserAddingPopup></UserAddingPopup>
@@ -21,6 +21,7 @@ class Main extends Component {
                 <DeleteUserPopup></DeleteUserPopup>
                 <DeleteTaskPopup></DeleteTaskPopup>
                 <UpdateUserPopup></UpdateUserPopup>
+                </div>
                 </div>
             </React.Fragment>
         );
