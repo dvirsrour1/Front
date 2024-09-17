@@ -39,6 +39,7 @@
 .text-of-titles:hover{
     opacity: 1;
     font-size: 1.4rem;
+    cursor: pointer;
     animation-name: example_text_animation;
 }
 
