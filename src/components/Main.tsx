@@ -7,6 +7,7 @@ import UpdateUserPopup from "./UpdateUserPopup";
 import TaskAddingPopup from "./TaskAddingPopup";
 import DeleteUserPopup from "./DeleteUserPopup";
 import DeleteTaskPopup from "./DeleteTaskPopup";
+import AllUserComponent from "./AllUserComponent";
 class Main extends Component {
     render() {
         return (
@@ -16,7 +17,7 @@ class Main extends Component {
                 <div className="container">
                 <UserAddingPopup></UserAddingPopup>
                 <TaskAddingPopup></TaskAddingPopup>
-                <button className="button"><span>Show all Users</span></button>
+                    <AllUserComponent></AllUserComponent>
                 <button className="button"><span>Show all Tasks</span></button>
                 <DeleteUserPopup></DeleteUserPopup>
                 <DeleteTaskPopup></DeleteTaskPopup>
