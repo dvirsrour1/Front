@@ -9,9 +9,27 @@
     margin-top: 120px;
 
 }
+@keyframes Header_animation_allUsers_true {
+    from{font-size: xxx-large; opacity: 1;}
+    to{font-size: x-large; opacity: 0; margin-top: 0}
+}
+@keyframes Header_animation_allUsers_false {
+    from{font-size: x-large; opacity: 0; margin-top: 0}
+    to{font-size: xxx-large; opacity: 1;}
+}
 
+.Table{
+    animation-name: "";
+    opacity: 1;
+    animation-fill-mode: forwards;
+
+}
+@keyframes Table_animation {
+    from{opacity: 1; visibility: visible;}
+    to{opacity: 0; visibility: hidden; animation-fill-mode: forwards; animation-name: ""}
+}
 .All-App{
-width:100%; height:100%; margin:0; top:0; left:0; background: #FFFFFF; position: absolute;
+width:100%; height:100%; margin:0; top:0; left:0; background: #FFFFFF; position: fixed;
     animation: all_app_animation 2s forwards;
 }
 @keyframes all_app_animation {
@@ -34,7 +52,17 @@ width:100%; height:100%; margin:0; top:0; left:0; background: #FFFFFF; position:
 }
 .container{
     display: block;
-    margin: 170px auto;
+    animation-name: "";
+    margin: 170px;
+
+}
+@keyframes container_animation {
+    from {margin: 170px auto}
+    to {margin: 0px auto;opacity: 0.5; pointer-events: none}
+}
+@keyframes container_animation_back {
+    from {opacity: 0.5; pointer-events: none;margin: 0px auto;}
+    to {opacity: 1; pointer-events: auto; margin: 170px auto}
 }
 .button {
     display: inline-block;
@@ -93,4 +121,15 @@ width:100%; height:100%; margin:0; top:0; left:0; background: #FFFFFF; position:
 .button:hover span:after {
     opacity: 1;
     right: 0;
+}
+.btn_of_closing{
+    position: absolute;
+    top: 10px;
+    right: -1px;
+    animation-name: "btn_of_closing_Clicked";
+}
+@keyframes btn_of_closing_Clicked {
+    from {opacity: 1; display: block}
+    to {opacity: 0; display: none;}
+
 }

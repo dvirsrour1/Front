@@ -1,0 +1,10 @@
+.table_style{
+    border-radius: 20px;
+}
+.scrollit{
+    margin-left: 60px;
+    margin-right: 60px;
+    border-radius: 20px;
+    overflow-y: scroll;
+    height:300px;
+}

@@ -1,6 +1,6 @@
-import React, {Component, useState} from 'react';
+import React, {Children, Component, ReactNode, useState} from 'react';
 import axios from "axios";
-
+import './css_files/Main.css'
 
 
 export const AllUserComponent =() =>{
@@ -11,22 +11,22 @@ export const AllUserComponent =() =>{
         axios.get("http://localhost:9090/List").then((response) => {
             console.log(response.data);
             const Array = response.data;
-
         }).catch((error) => {
             console.log(error);
         })
     }
     {/*להכניס את מידע הGET לתוך טבלה*/}
-        return (
-            <React.Fragment>
-                <button
-                    className="button"
-                    onClick={ButtonShow}
-                >
-                    Show All Users
-                </button>
-            </React.Fragment>
-        );
+    return (
+        <React.Fragment>
+            <button
+                className="button"
+                onClick={ButtonShow}
+            >
+                Show All Users
+            </button>
+
+        </React.Fragment>
+    );
 }
 
 export default AllUserComponent;
