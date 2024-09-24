@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useEffect, Component} from 'react';
 import axios from "axios";
 import './css_files/Table.css'
 interface User{
@@ -9,31 +9,46 @@ interface User{
 
 interface ArrayOfUsers{
     UsersArray: Array<User>;
+    showTable: number;
 }
-class TableComponent extends Component<{},ArrayOfUsers> {
+class TableComponent extends Component<{} ,ArrayOfUsers> {
 
     constructor(props: {}) {
         super(props);
         this.state = {
-            UsersArray: []
+            showTable: 1
+            ,UsersArray: []
         }
     }
-    DataManager = () =>{
-        axios.get("http://localhost:9090/List").then((response) => {
-            this.setState({
-                UsersArray: response.data
-            })
-            console.log(this.state.UsersArray);
-        }).catch((error) => {
-            console.log(error);
-        })
-    }
 
+
+    componentDidUpdate(prevProps: {}, prevState: Readonly<ArrayOfUsers>, snapshot?: any) {
+        if(prevState.showTable !== this.state.showTable) {
+                axios.get("http://localhost:9090/List").then((response) => {
+                    this.setState({
+                        UsersArray: response.data
+                    })
+                    console.log(this.state.UsersArray);
+                }).catch((error) => {
+                    console.log(error);
+                })
+
+
+        }
+
+    }
+    componentDidMount() {
+        const interval = setInterval(() => {
+            this.setState({
+                showTable: (this.state.showTable<2000 ? +100: this.state.showTable)
+            });
+        }, this.state.showTable);
+        console.log(this.state.showTable)
+    }
 
 
     render() {
         {/*need to find a func that will render it once*/}
-       this.DataManager()
         return (
             <React.Fragment>
             <div className='scrollit'>
