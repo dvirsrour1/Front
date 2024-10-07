@@ -50,13 +50,14 @@ class DeleteUserPopup extends Component<{},State> {
         }
 
         else {
-            this.setState({
-                isModalOpen: true
-            })
+
             axios.delete(`http://localhost:9090/DeleteUser/${this.state.UsersId}`).then(response => {
-                alert('User Deleted successfully')
+                alert(response.data)
             }).catch(error => {
-                console.log(error.message)
+                alert(error.message)
+            })
+            this.setState({
+                isModalOpen: false
             })
         }
         {/*fix the Error functionality.*/}
@@ -79,9 +80,9 @@ class DeleteUserPopup extends Component<{},State> {
                             <div className='div-spaces'></div>
                             <h1 className={'text-of-titles'}>User's Id:</h1>
                             <div className='div-spaces'></div>
-                            <input type='password' className='input-group-text style-adding-to-text' value={this.state.UsersId} onChange={this.handleIdChange} ></input>
+                            <input type='number' className='input-group-text style-adding-to-text' value={this.state.UsersId} onChange={this.handleIdChange} ></input>
                             <div className='div-spaces'></div>
-                            <div className={'div-of-Error'} style={{ visibility: this.state.thereIsAnError ? 'visible' : 'hidden' }}>There was a problem, please try again.</div>
+                            <div className={'div-of-Error'} style={{ visibility: this.state.thereIsAnError ? 'visible' : 'hidden' }}>ID is incorrect</div>
                         </form>
                     </Modal.Body>
                     <Button onClick={this.PrintAndChangeState}>

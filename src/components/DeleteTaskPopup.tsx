@@ -52,16 +52,17 @@ class DeleteTaskPopup extends Component<{},State> {
         }
 
         else {
-            this.setState({
-                isModalOpen: true
-            })
+
             const nameOfTaskObject: nameOfTaskObject = {
                 nameOfTask: this.state.nameOfTaskState
             }
             axios.delete(`http://localhost:9090/DeleteTask`, {data: nameOfTaskObject}).then(response => {
-                alert('Task Deleted successfully')
+                alert(response.data)
             }).catch(error => {
                 console.log(error.message)
+            })
+            this.setState({
+                isModalOpen: false
             })
         }
         {/*fix the Error functionality.*/}
@@ -87,9 +88,8 @@ class DeleteTaskPopup extends Component<{},State> {
                             <input type='text' className='input-group-text style-adding-to-text' value={this.state.nameOfTaskState} onChange={this.handleNameOfTaskChange} ></input>
                             <div className='div-spaces'></div>
                             <div className={'div-of-Error'}
-                                 style={{visibility: this.state.thereIsAnError ? 'visible' : 'hidden'}}>There was a
-                                problem, please try again.
-                            </div>
+                                 style={{visibility: this.state.thereIsAnError ? 'visible' : 'hidden'}}>Task name is Incorrect</div>
+
                         </form>
                     </Modal.Body>
                     <Button onClick={this.PrintAndChangeState}>

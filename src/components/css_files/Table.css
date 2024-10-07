@@ -8,3 +8,38 @@
     overflow-y: scroll;
     height:300px;
 }
+
+.input-search{
+    background-image: url("./search-icon.png");
+    background-position: 5px;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    margin-left: 80px;
+    margin-right: 60px;
+    width: 70%;
+    text-align: left;
+}
+.search-button{
+    border-radius: 4px;
+    background-color: black;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 14px;
+    padding: 10px;
+    width: 120px;
+    transition: background-color 0.5s ease;
+}
+.search-button:hover {
+    background-color: coral;
+    transition: 0.5s;
+}
+
+.search-button:hover after{
+    background-color: black;
+    transition: 0.5s;
+}
+.search{
+    width: 100%;
+    display: inline-flex;
+}

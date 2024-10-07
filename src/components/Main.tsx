@@ -1,23 +1,24 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useCallback, useState} from 'react';
 import {Buffer} from "node:buffer";
 import './css_files/Main.css';
 import './UserAddingPopup'
-import UserAddingPopup from "./UserAddingPopup";
-import UpdateUserPopup from "./UpdateUserPopup";
-import TaskAddingPopup from "./TaskAddingPopup";
 import DeleteUserPopup from "./DeleteUserPopup";
 import DeleteTaskPopup from "./DeleteTaskPopup";
 import Table, {Button, Tab, TabPane} from "react-bootstrap";
 import axios from "axios";
 import {WritableStream} from "node:stream/web";
 import TableComponent from "./TableComponent";
+import TasksTableComponent from "./TasksTableComponent";
+import {TaskAddindPopup} from "./TaskAddingPopup";
+import {UserAddingPopup} from "./UserAddingPopup";
+import {UpdateUserPopup} from "./UpdateUserPopup";
 
 export const Main  =() =>{
     const [showUsersTable, setShowUsersTable] = useState(false);
-    const [closeUsersTable, setCloseUsersTable] = useState(false);
-    function CloseUsersTable(){
-           setCloseUsersTable(!closeUsersTable);
-                const Header = document.getElementById('Header') as HTMLElement;
+    const [showTasksTable, setShowTasksTable] = useState(false);
+
+    function CloseTable(){
+        const Header = document.getElementById('Header') as HTMLElement;
                 Header.style.animationName = 'Header_animation_allUsers_false'
                 const Table = document.getElementById('Table') as HTMLElement;
                 Table.style.animationName = 'Table_animation'
@@ -32,36 +33,58 @@ export const Main  =() =>{
                 closeButton.style.animationFillMode = '1'
 
     }
-    function ButtonShow() {
-        setShowUsersTable(!showUsersTable);
-        console.log(showUsersTable);
+
+
+    function ShowUsersTable(type: any) {
+        if(type === 'USER')
+        {
+            setShowUsersTable(!showUsersTable);
+            setShowTasksTable(false);
+        }
+        else if(type === 'TASK')
+        {
+            setShowTasksTable(!showTasksTable);
+            setShowUsersTable(false);
+
+        }
     }
+
         return (
             <React.Fragment>
                 <div className="All-App">
-                    {showUsersTable ?<button className="button btn_of_closing" onClick={CloseUsersTable} id='CloseButton'>Close Table Button</button>: null}
+
+                    {(showUsersTable || showTasksTable) ?<button className="button btn_of_closing" onClick={CloseTable} id='CloseButton'>Close Table Button</button>: null}
+
                     <h1 className="Header" id='Header' style={{
-                        animation: showUsersTable ? "Header_animation_allUsers_true 2s forwards" : "Header_animation 2s forwards, Flow_animation 3s forwards",
+                        animation: (showUsersTable || showTasksTable) ? "Header_animation_allUsers_true 2s forwards" : "Header_animation 2s forwards, Flow_animation 3s forwards",
                         color: "coral"
                     }}>Welcome to our HTTP System!</h1>
+
                     <div className="container" id='Container' style={{
-                        animationName: showUsersTable ? "container_animation" : "",
+                        animationName: (showUsersTable || showTasksTable) ? "container_animation" : "",
                         animationDuration: "2s",
                         animationFillMode: "forwards",
                         animationIterationCount: "1"
                     }}>
-                        <UserAddingPopup></UserAddingPopup>
-                        <TaskAddingPopup></TaskAddingPopup>
-                        <button className="button" onClick={ButtonShow} id='ShowUsersButton'><span>Show all Users</span></button>
-                        <button className="button"><span>Show all Tasks</span></button>
+
+                        <UserAddingPopup />
+                        <TaskAddindPopup />
+                        <button className="button" onClick={() =>ShowUsersTable('USER')} id='ShowUsersButton'><span>Show all Users</span></button>
+                        <button className="button" onClick={() =>ShowUsersTable('TASK')}><span>Show all Tasks</span></button>
                         <DeleteUserPopup></DeleteUserPopup>
                         <DeleteTaskPopup></DeleteTaskPopup>
-                        <UpdateUserPopup></UpdateUserPopup>
+                        <UpdateUserPopup />
                     </div>
+
                     {showUsersTable ?
                     <div id='Table'>
                      <TableComponent></TableComponent>
                     </div>: null}
+
+                    {showTasksTable?
+                    <div id='Table'>
+                        <TasksTableComponent />
+                    </div> :null}
                 </div>
             </React.Fragment>
         );

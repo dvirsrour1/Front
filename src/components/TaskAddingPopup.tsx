@@ -1,9 +1,14 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import Modal from 'react-bootstrap/Modal';
 import {Button} from "react-bootstrap";
 import './css_files/Popup.css'
 import userIcon from './user.png'
 import axios from "axios";
+import deleteTaskPopup from "./DeleteTaskPopup";
+import {createDispatchHook, Provider} from "react-redux";
+import {addUser, showlist} from "./Redux/Reducer";
+import {useDispatch} from "react-redux";
+import store from "./Redux/Store";
 
 interface State{
     thereIsAnError: boolean;
@@ -11,105 +16,143 @@ interface State{
     idOfUser: string;
     nameOfTask: string;
     description: string;
+    errorMessage: string;
 }
 interface Task{
     nameOfTask: string;
     idOfUser: number;
     description: string;
 }
-class TaskAddingPopup extends Component<{}, State> {
-    constructor(props: {}) {
-        super(props);
-
-        this.state = {
+interface User{
+    name: string;
+    id: string;
+    description: string;
+}
+interface State{
+    thereIsAnError: boolean,
+    isModalOpen: boolean,
+    nameOfTask: string,
+    description: string,
+    idOfUser: string,
+    errorMessage:string
+}
+export const TaskAddindPopup  =() => {
+    {
+        const State: State = {
             thereIsAnError: false,
             isModalOpen: false,
             nameOfTask: '',
             description: '',
-            idOfUser: ''
+            idOfUser: '',
+            errorMessage: ''
+        }
+        const [showState, setState] = React.useState(State);
+        const ChangeState = () => {
+            setState((prevState) => ({
+                ...prevState,
+                isModalOpen: !prevState.isModalOpen
+            }));
+        }
+        const dispatch = useDispatch();
+
+        const userNameHasNumbers = (nameOfUser: string): boolean => {
+            for (let i = 0; i < nameOfUser.length; i++) {
+                if (parseInt(nameOfUser.charAt(i))) {
+                    return true
+                }
+            }
+            return false;
         }
 
-
-    }
-    ChangeState = () =>{
-        this.setState({
-            isModalOpen: !this.state.isModalOpen
-        })
-    }
-
-
-    userNameHasNumbers = (nameOfUser: string): boolean => {
-        for (let i = 0; i < nameOfUser.length; i++) {
-            if(parseInt(nameOfUser.charAt(i)))
-            {
+        const somethingIsNull = (): boolean => {
+            if (showState.nameOfTask === '') {
+                setState((prevState) => ({
+                    ...prevState,
+                    errorMessage: 'User name is required'
+                }))
                 return true
             }
-        }
-        return false;
-    }
-    somethingIsNull = ():boolean =>{
-        if(this.state.description=== '' || this.state.nameOfTask === '' || this.state.idOfUser ==='')
-        {
-            return true
-        }
-        else
-        {
-            return false
-        }
-    }
-    PrintAndChangeState = () => {
-        if ( this.somethingIsNull() ) {
-            this.setState({
-                thereIsAnError: true
-            })
-        }
-
-        else {
-            this.setState({
-                isModalOpen: true
-            })
-            const newTask: Task = {
-                nameOfTask: this.state.nameOfTask,
-                idOfUser: parseInt(this.state.idOfUser,10),
-                description: this.state.description
+            if (showState.description === '') {
+                setState((prevState) => ({
+                    ...prevState,
+                    errorMessage: 'Description is required'
+                }))
+                return true
             }
-            axios.post('http://localhost:9090/AddTask', newTask).then(response => {
-                alert('Task added successfully')
-            }).catch(error => {
+            if (showState.idOfUser === '') {
+                setState((prevState) => ({
+                    ...prevState,
+                    errorMessage: 'User id is required'
+                }))
+                return true
+            }
+            return false;
+        }
+        const PrintAndChangeState = () => {
+            if (somethingIsNull()) {
+                setState((prevState) => ({
+                    ...prevState,
+                    thereIsAnError: true
+                }))
+            } else {
+
+                const newTask: Task = {
+                    nameOfTask: showState.nameOfTask,
+                    idOfUser: parseInt(showState.idOfUser, 10),
+                    description: showState.description
+                }
+
+               // const newUser: User = {
+              //      name:'rooi',
+              //      id:'5555555',
+              //      description:showState.description,
+              //  }
+              //  dispatch(showlist());
+                axios.post('http://localhost:9090/AddTask', newTask).then(response => {
+                    alert('Task added successfully')
+                }).catch(error => {
 
                     console.log("error.message")
 
-            })
+                })
+
+                setState((prevState) => ({
+                    ...prevState,
+                    isModalOpen: false
+                }))
+
+            }
         }
-        {/*fix axion*/}
-        {/*fix the Error functionality.*/}
-    }
 
-    handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
-        this.setState({
-            idOfUser: e.target.value
-        })
-    }
+        const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setState((prevState) => ({
+                ...prevState,
+                idOfUser: e.target.value
+            }))
+        }
 
-    handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            nameOfTask: e.target.value
-        })
-    }
+        const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setState((prevState) => ({
+                ...prevState,
+                nameOfTask: e.target.value
+            }))
 
-    handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            description: e.target.value
-        })
-    }
-    render() {
+        }
+
+        const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setState((prevState) => ({
+                ...prevState,
+                description: e.target.value
+            }))
+        }
         return (
             <React.Fragment>
-                <button className="button" onClick={this.ChangeState}><span>Add new Task</span></button>
+
+                <button className="button" onClick={ChangeState}><span>Add new Task</span></button>
 
 
-                <Modal show={this.state.isModalOpen} onHide={this.ChangeState}>
+                <Modal show={showState.isModalOpen} onHide={ChangeState}>
                     <Modal.Header closeButton></Modal.Header>
                     <Modal.Body>
                         <form>
@@ -121,29 +164,35 @@ class TaskAddingPopup extends Component<{}, State> {
                             <div className='div-spaces'></div>
                             <h1 className={'text-of-titles'}>Task name:</h1>
                             <div className='div-spaces'></div>
-                            <input type='text' className={'input-group-text style-adding-to-text'} id='input_of_Task_name' value={this.state.nameOfTask} onChange={this.handleNameChange} autoComplete='name' ></input>
+                            <input type='text' className={'input-group-text style-adding-to-text'}
+                                   id='input_of_Task_name' value={showState.nameOfTask} onChange={handleNameChange}
+                                   autoComplete='name'></input>
                             <div className='div-spaces'></div>
                             <h1 className={'text-of-titles'}>Id of User:</h1>
                             <div className='div-spaces'></div>
-                            <input type='password' className='input-group-text style-adding-to-text' value={this.state.idOfUser} onChange={this.handleIdChange} ></input>
+                            <input type='number' className='input-group-text style-adding-to-text'
+                                   value={showState.idOfUser} onChange={handleIdChange}></input>
                             <div className='div-spaces'></div>
                             <h1 className={'text-of-titles'}>Description:</h1>
                             <div className='div-spaces'></div>
-                            <input type='text' className={'input-group-text style-adding-to-text'} value={this.state.description} onChange={this.handleDescriptionChange}></input>
+                            <input type='text' className={'input-group-text style-adding-to-text'}
+                                   value={showState.description} onChange={handleDescriptionChange}></input>
                             <div className='div-spaces'></div>
-                            <div className={'div-of-Error'} style={{ visibility: this.state.thereIsAnError ? 'visible' : 'hidden' }}>There was a problem, please try again.</div>
+                            <div className={'div-of-Error'}
+                                 style={{visibility: showState.thereIsAnError ? 'visible' : 'hidden'}}>There was a
+                                problem, please try again.
+                            </div>
                         </form>
                     </Modal.Body>
-                    <Button onClick={this.PrintAndChangeState}>
+                    <Button onClick={PrintAndChangeState}>
                         Submit
                     </Button>
                 </Modal>
             </React.Fragment>
         );
+        {/*לעשות BIND לכל הפונקציות וSHOWSTATE לכל הפרמטרים של STATE, לבדוק שהכל רץ תקין ואם כן להכניס של הDISPATCH של הSLICE ולבדוק שהוא עובד*/
+        }
 
 
     }
 }
-
-export default TaskAddingPopup;
-
