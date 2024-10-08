@@ -15,114 +15,97 @@ interface ArrayOfUsers{
     showTable: number;
     searchBerText: any;
 }
-class TableComponent extends Component<{} ,ArrayOfUsers> {
 
-    constructor(props: {}) {
-        super(props);
-        this.state = {
-            showTable: 1
-            ,UsersArray: [],
-            UsersArrayHelper:[],
-            searchBerText: ""
-        }
+export const TableComponent= () =>{
+    const State: ArrayOfUsers = {
+        showTable: 1
+        ,UsersArray: [],
+        UsersArrayHelper:[],
+        searchBerText: ""
     }
+    const [showState, setState] = React.useState(State);
 
-
-    componentDidUpdate(prevProps: {}, prevState: Readonly<ArrayOfUsers>, snapshot?: any) {
-        if(prevState.showTable !== this.state.showTable) {
-                axios.get("http://localhost:9090/List").then((response) => {
-                    this.setState({
-                        UsersArray: response.data
-                    })
-                    console.log(this.state.UsersArray);
-                }).catch((error) => {
-                    console.log(error);
-                })
-        }
-
-    }
-    componentDidMount() {
-        const interval = setInterval(() => {
-            this.setState({
-                showTable: (this.state.showTable<2000 ? +100: this.state.showTable)
-            });
-        }, this.state.showTable);
-        console.log(this.state.showTable)
-        if(this.state.searchBerText === ''){
-            axios.get("http://localhost:9090/List").then((response) => {
-                this.setState({
-                    UsersArray: response.data
-                })
-                console.log(this.state.UsersArray);
-            }).catch((error) => {
-                console.log(error);
-            })
-        }
-    }
-
-    inputChange =(e: ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            searchBerText: e.target.value
+    useEffect(() => {
+        axios.get("http://localhost:9090/List").then((response) => {
+            setState((prevState) =>({
+                ...prevState,
+                UsersArray: response.data
+            }))
+            console.log(showState.UsersArray);
+        }).catch((error) => {
+            console.log(error);
         })
-    }
+    },[showState.showTable])
 
-    searchButtonClicked = () => {
-        this.state.UsersArray.map((User,index)=>{
-            if(User.name===this.state.searchBerText)
-            {
-                this.state.UsersArrayHelper.push(User)
-            }
-        })
-
-        this.setState({UsersArray: this.state.UsersArrayHelper})
-    }
-
-
-    render() {
-        if(this.state.searchBerText === ''){
+    useEffect(() =>{
+        if(showState.searchBerText === ''){
             axios.get("http://localhost:9090/List").then((response) => {
-                this.setState({
+                setState((prevState) =>({
+                    ...prevState,
                     UsersArray: response.data,
                     UsersArrayHelper:[]
-                })
-                console.log(this.state.UsersArray);
+
+
+                }))
+                console.log(showState.UsersArray);
             }).catch((error) => {
                 console.log(error);
             })
         }
-        return (
-            <React.Fragment>
-                <div className='div-spaces' />
-                <div className='search'>
-                <input className='input-group-text input-search' onChange={this.inputChange}/>
-                    <button className={'search-button'} onClick={this.searchButtonClicked}>SEARCH</button>
-                </div>
-                <div className='div-spaces'></div>
-                <div className='scrollit'>
-                    <table className="table table_style">
-                        <thead>
-                        <tr className='tr'>
-                            <th className="col">#</th>
-                            <th className="col">Name</th>
-                            <th className="col">Id</th>
-                            <th className="col">Description</th>
+    }, [showState.searchBerText])
+
+
+    const inputChange =(e: ChangeEvent<HTMLInputElement>) => {
+        setState((prevState) =>({
+            ...prevState,
+            searchBerText: e.target.value
+        }))
+    }
+
+    const searchButtonClicked = () => {
+        showState.UsersArray.map((User,index)=>{
+            if(User.name===showState.searchBerText)
+            {
+                showState.UsersArrayHelper.push(User)
+            }
+        })
+        setState((prevState) =>({
+            ...prevState,
+            UsersArray: showState.UsersArrayHelper
+        }))
+    }
+
+    return (
+        <React.Fragment>
+            <div className='div-spaces' />
+            <div className='search'>
+                <input className='input-group-text input-search' onChange={inputChange}/>
+                <button className={'search-button'} onClick={searchButtonClicked}>SEARCH</button>
+            </div>
+            <div className='div-spaces'></div>
+            <div className='scrollit'>
+                <table className="table table_style">
+                    <thead>
+                    <tr className='tr'>
+                        <th className="col">#</th>
+                        <th className="col">Name</th>
+                        <th className="col">Id</th>
+                        <th className="col">Description</th>
+                    </tr>
+                    </thead>
+                    {showState.UsersArray.map((User, index) => (
+                        <thead className="thead-dark">
+                        <tr key={index}>
+                            <th>{index}</th>
+                            <td>{User.name}</td>
+                            <td>{User.id}</td>
+                            <td>{User.description}</td>
                         </tr>
                         </thead>
-                        {this.state.UsersArray.map((User, index) => (
-                            <thead className="thead-dark">
-                            <tr key={index}>
-                                <th>{index}</th>
-                                <td>{User.name}</td>
-                                <td>{User.id}</td>
-                                <td>{User.description}</td>
-                            </tr>
-                            </thead>
-                        ))}
-                    </table>
-                </div>
-            </React.Fragment>
-        );
-    }
-}
+                    ))}
+                </table>
+            </div>
+        </React.Fragment>
+    );
 
-export default TableComponent;
+}

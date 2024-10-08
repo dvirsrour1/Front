@@ -4,7 +4,6 @@ import {Button} from "react-bootstrap";
 import './css_files/Popup.css'
 import userIcon from './user.png'
 import axios from "axios";
-import deleteTaskPopup from "./DeleteTaskPopup";
 import {createDispatchHook, Provider} from "react-redux";
 import {addUser, showlist} from "./Redux/Reducer";
 import {useDispatch} from "react-redux";

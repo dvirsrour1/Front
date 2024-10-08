@@ -2,16 +2,16 @@ import React, {Component, useCallback, useState} from 'react';
 import {Buffer} from "node:buffer";
 import './css_files/Main.css';
 import './UserAddingPopup'
-import DeleteUserPopup from "./DeleteUserPopup";
-import DeleteTaskPopup from "./DeleteTaskPopup";
 import Table, {Button, Tab, TabPane} from "react-bootstrap";
 import axios from "axios";
 import {WritableStream} from "node:stream/web";
-import TableComponent from "./TableComponent";
-import TasksTableComponent from "./TasksTableComponent";
 import {TaskAddindPopup} from "./TaskAddingPopup";
 import {UserAddingPopup} from "./UserAddingPopup";
 import {UpdateUserPopup} from "./UpdateUserPopup";
+import {TasksTableComponent} from "./TasksTableComponent";
+import {TableComponent} from "./TableComponent";
+import {DeleteUserPopup} from "./DeleteUserPopup";
+import {DeleteTaskPopup} from "./DeleteTaskPopup";
 
 export const Main  =() =>{
     const [showUsersTable, setShowUsersTable] = useState(false);
@@ -71,14 +71,14 @@ export const Main  =() =>{
                         <TaskAddindPopup />
                         <button className="button" onClick={() =>ShowUsersTable('USER')} id='ShowUsersButton'><span>Show all Users</span></button>
                         <button className="button" onClick={() =>ShowUsersTable('TASK')}><span>Show all Tasks</span></button>
-                        <DeleteUserPopup></DeleteUserPopup>
-                        <DeleteTaskPopup></DeleteTaskPopup>
+                        <DeleteUserPopup />
+                        <DeleteTaskPopup />
                         <UpdateUserPopup />
                     </div>
 
                     {showUsersTable ?
                     <div id='Table'>
-                     <TableComponent></TableComponent>
+                     <TableComponent />
                     </div>: null}
 
                     {showTasksTable?
