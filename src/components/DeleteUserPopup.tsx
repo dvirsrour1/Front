@@ -3,21 +3,24 @@ import Modal from "react-bootstrap/Modal";
 import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
 import axios from "axios";
+import {useDispatch, useSelector} from "react-redux";
+import {useAppDispatch} from "./Redux/Store";
+import {deleteUser, deleteUserFromServer, getStateStatus} from "./Redux/Reducer";
 
 interface State{
     thereIsAnError: boolean;
     isModalOpen: boolean;
     UsersId: string;
 }
-
 export const DeleteUserPopup = () =>{
+    const dispatch = useAppDispatch();
     const state: State = {
         isModalOpen: false,
         thereIsAnError: false,
         UsersId: '',
     };
     const [showState, setState] = React.useState(state)
-
+    const Status = useSelector(getStateStatus);
     const handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
         setState((prevState) =>({
             ...prevState,
@@ -51,11 +54,12 @@ export const DeleteUserPopup = () =>{
         }
 
         else {
-            axios.delete(`http://localhost:9090/DeleteUser/${showState.UsersId}`).then(response => {
-                alert(response.data)
-            }).catch(error => {
-                alert(error.message)
-            })
+            console.log(state.UsersId)
+            dispatch(deleteUserFromServer(state.UsersId));
+            if(Status !=='rejected')
+            {
+                dispatch(deleteUser(state.UsersId))
+            }
             setState((prevState) =>({
                 ...prevState,
                 isModalOpen: false
@@ -82,7 +86,7 @@ export const DeleteUserPopup = () =>{
                         <div className='div-spaces'></div>
                         <h1 className={'text-of-titles'}>User's Id:</h1>
                         <div className='div-spaces'></div>
-                        <input type='number' className='input-group-text style-adding-to-text' value={showState.UsersId} onChange={handleIdChange} ></input>
+                        <input type='text' className='input-group-text style-adding-to-text' value={showState.UsersId} onChange={handleIdChange} ></input>
                         <div className='div-spaces'></div>
                         <div className={'div-of-Error'} style={{ visibility: showState.thereIsAnError ? 'visible' : 'hidden' }}>ID is incorrect</div>
                     </form>

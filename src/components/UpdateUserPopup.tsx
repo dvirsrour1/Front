@@ -3,8 +3,16 @@ import Modal from "react-bootstrap/Modal";
 import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
 import axios from "axios";
-import {useDispatch} from "react-redux";
-import {showlist} from "./Redux/Reducer";
+import {useDispatch, useSelector} from "react-redux";
+import reducer, {
+    addTask, changeUserDes,
+    getAllUsers,
+    getStateStatus,
+    getUsers,
+    showlist,
+    updateUserDescriptionServer
+} from "./Redux/Reducer";
+import {useAppDispatch} from "./Redux/Store";
 
 interface UserUpdating{
     userId:string;
@@ -19,7 +27,8 @@ interface State{
 }
 
 export const UpdateUserPopup = () =>{
-    const dispatch = useDispatch();
+    const reduxStatus = useSelector(getStateStatus);
+    const dispatch = useAppDispatch();
     const state: State = {
         isModalOpen: false,
         thereIsAnError: false,
@@ -90,11 +99,12 @@ export const UpdateUserPopup = () =>{
                 userId: showState.UsersId,
                 description: showState.description
             }
-            axios.post('http://localhost:9090/UpdateUserDescription', UpdatingUser).then(response => {
-                alert('User updated succesefuly')
-            }).catch(error => {
-                console.log(error.message)
-            })
+
+            dispatch(updateUserDescriptionServer(UpdatingUser))
+            if(reduxStatus !== 'rejected')
+            {
+                dispatch(changeUserDes(UpdatingUser)); // check if the unique dispatch works
+            }
             setState((prevState) =>({
                 ...prevState,
                 isModalOpen: false

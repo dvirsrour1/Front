@@ -3,9 +3,8 @@ import Modal from 'react-bootstrap/Modal';
 import {Button} from "react-bootstrap";
 import './css_files/Popup.css'
 import userIcon from './user.png'
-import axios from "axios";
 import {useDispatch, useSelector} from "react-redux";
-import {addUser, fetchUsers, getStateStatus, showlist, updateUsers} from "./Redux/Reducer";
+import {addUser, getUsers, getStateStatus, showlist, updateUsers, addUserToServer} from "./Redux/Reducer";
 import {useAppDispatch} from "./Redux/Store";
 
 interface State{
@@ -45,6 +44,9 @@ export const UserAddingPopup = () =>{
     }
     const userNameHasNumbers = (nameOfUser: string): boolean => {
         for (let i = 0; i < nameOfUser.length; i++) {
+            if(parseInt(nameOfUser.charAt(i))===0) {
+                return true
+            }
             if (parseInt(nameOfUser.charAt(i))) {
                 return true
             }
@@ -100,18 +102,11 @@ export const UserAddingPopup = () =>{
                 id: showState.newUserId,
                 description: showState.newUserDescription
             }
-            if(reduxStatus === 'idle')
-            {
-                dispatch(fetchUsers());
-            }
+            dispatch(addUserToServer(newUser));
             if(reduxStatus !== 'rejected')
             {
-                axios.post('http://localhost:9090/NewUser', newUser).then(response => {
-                    alert("User added successfully");
-                    dispatch(addUser(newUser))
-                }).catch(error => {
-                    console.log(error.message)
-                })
+                alert("User added successfully");
+                //dispatch(addUser(newUser))
                 setState((prevState) =>({
                     ...prevState,
                     isModalOpen: false
@@ -120,7 +115,6 @@ export const UserAddingPopup = () =>{
 
             }
         }
-        {/*fix the Error functionality.*/}
     }
     const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setState((prevState) => ({

@@ -5,7 +5,7 @@ import './UserAddingPopup'
 import Table, {Button, Tab, TabPane} from "react-bootstrap";
 import axios from "axios";
 import {WritableStream} from "node:stream/web";
-import {TaskAddindPopup} from "./TaskAddingPopup";
+import {TaskAddingPopup} from "./TaskAddingPopup";
 import {UserAddingPopup} from "./UserAddingPopup";
 import {UpdateUserPopup} from "./UpdateUserPopup";
 import {TasksTableComponent} from "./TasksTableComponent";
@@ -68,7 +68,7 @@ export const Main  =() =>{
                     }}>
 
                         <UserAddingPopup />
-                        <TaskAddindPopup />
+                        <TaskAddingPopup />
                         <button className="button" onClick={() =>ShowUsersTable('USER')} id='ShowUsersButton'><span>Show all Users</span></button>
                         <button className="button" onClick={() =>ShowUsersTable('TASK')}><span>Show all Tasks</span></button>
                         <DeleteUserPopup />

@@ -3,7 +3,9 @@ import Modal from "react-bootstrap/Modal";
 import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
 import axios from "axios";
-import {showlist} from "./Redux/Reducer";
+import {deleteTask, deleteTasksFromServer, getStateStatus, showlist} from "./Redux/Reducer";
+import {useAppDispatch} from "./Redux/Store";
+import {useDispatch, useSelector} from "react-redux";
 
 interface State{
     thereIsAnError: boolean;
@@ -29,8 +31,9 @@ export const DeleteTaskPopup =()=>{
 
         }))
     }
-
-
+    const dispatchAsync = useAppDispatch();
+    const dispatch = useDispatch();
+    const StateOfStore = useSelector(getStateStatus)
     const ChangeState = () =>{
         setState((prevState) =>({
             ...prevState,
@@ -59,16 +62,21 @@ export const DeleteTaskPopup =()=>{
             const nameOfTaskObject: nameOfTaskObject = {
                 nameOfTask: showState.nameOfTaskState
             }
-            axios.delete(`http://localhost:9090/DeleteTask`, {data: nameOfTaskObject}).then(response => {
-                alert(response.data)
-            }).catch(error => {
-                console.log(error.message)
-            })
-            setState((prevState)=>({
-                ...prevState,
-                isModalOpen: false
+            dispatchAsync(deleteTasksFromServer(nameOfTaskObject));
+            if(StateOfStore !== 'rejected')
+            {
+                dispatch(deleteTask(nameOfTaskObject));
+            }
+           // axios.delete(`http://localhost:9090/DeleteTask`, {data: nameOfTaskObject}).then(response => {
+           //     alert(response.data)
+           // }).catch(error => {
+           //     console.log(error.message)
+           // })
+           // setState((prevState)=>({
+           //     ...prevState,
+           //     isModalOpen: false
 
-            }))
+           // }))
         }
         {/*fix the Error functionality.*/}
     }

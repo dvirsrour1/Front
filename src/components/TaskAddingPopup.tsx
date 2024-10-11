@@ -5,9 +5,9 @@ import './css_files/Popup.css'
 import userIcon from './user.png'
 import axios from "axios";
 import {createDispatchHook, Provider} from "react-redux";
-import {addUser, showlist} from "./Redux/Reducer";
+import {addTask, addTasksToServer, addUser, showlist} from "./Redux/Reducer";
 import {useDispatch} from "react-redux";
-import store from "./Redux/Store";
+import store, {useAppDispatch} from "./Redux/Store";
 
 interface State{
     thereIsAnError: boolean;
@@ -18,10 +18,11 @@ interface State{
     errorMessage: string;
 }
 interface Task{
-    nameOfTask: string;
+    taskName: string;
     idOfUser: number;
-    description: string;
+    taskDescription: string;
 }
+
 interface User{
     name: string;
     id: string;
@@ -35,7 +36,7 @@ interface State{
     idOfUser: string,
     errorMessage:string
 }
-export const TaskAddindPopup  =() => {
+export const TaskAddingPopup  =() => {
     {
         const State: State = {
             thereIsAnError: false,
@@ -52,6 +53,7 @@ export const TaskAddindPopup  =() => {
                 isModalOpen: !prevState.isModalOpen
             }));
         }
+        const dispatchAsynce = useAppDispatch();
         const dispatch = useDispatch();
 
         const userNameHasNumbers = (nameOfUser: string): boolean => {
@@ -96,25 +98,12 @@ export const TaskAddindPopup  =() => {
             } else {
 
                 const newTask: Task = {
-                    nameOfTask: showState.nameOfTask,
+                    taskName: showState.nameOfTask,
                     idOfUser: parseInt(showState.idOfUser, 10),
-                    description: showState.description
+                    taskDescription: showState.description
                 }
-
-               // const newUser: User = {
-              //      name:'rooi',
-              //      id:'5555555',
-              //      description:showState.description,
-              //  }
-              //  dispatch(showlist());
-                axios.post('http://localhost:9090/AddTask', newTask).then(response => {
-                    alert('Task added successfully')
-                }).catch(error => {
-
-                    console.log("error.message")
-
-                })
-
+                dispatchAsynce(addTasksToServer(newTask));
+                dispatch(addTask(newTask))
                 setState((prevState) => ({
                     ...prevState,
                     isModalOpen: false

@@ -7,6 +7,7 @@ const store = configureStore({
         users: reducer,
     },
 });
+
 export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export default store;

@@ -1,11 +1,27 @@
 import React, {useEffect, Component, useState} from 'react';
 import axios from "axios";
 import './css_files/Table.css'
+import {useDispatch, useSelector} from "react-redux";
+import {useAppDispatch} from "./Redux/Store";
+import {getStateStatus, getTasks, getTasksFromState} from "./Redux/Reducer";
+import App from "../App";
 interface Task{
     taskName: string;
     idOfUser: string;
     taskDescription: string;
 }
+interface User{
+    name: string;
+    id: string;
+    description: string;
+}
+interface AppState {
+    users: Array<User>,
+    tasks: Array<Task>,
+    status: string,
+    error: boolean
+}
+
 
 interface ArrayOfUsers{
     TaskArray: Array<Task>;
@@ -18,19 +34,9 @@ export const TasksTableComponent = () => {
         ,TaskArray: []
     }
     const [showState, setState] = React.useState(state);
-
-    useEffect(() => {
-        axios.get("http://localhost:9090/Tasks").then((response) => {
-            setState((prevState) =>({
-                ...prevState,
-                TaskArray: response.data
-            }))
-
-            console.log(showState.TaskArray);
-        }).catch((error) => {
-            console.log(error);
-        })
-    },[showState.showTable])
+    const dispatch = useAppDispatch();
+    const StoreStatesTasks = useSelector((initialState: AppState) => initialState.tasks);
+    const StoreStatesStatus = useSelector(getStateStatus)
 // add search button
     return (
         <React.Fragment>
@@ -47,7 +53,7 @@ export const TasksTableComponent = () => {
                         <th className="col">Description</th>
                     </tr>
                     </thead>
-                    {showState.TaskArray.map((Task, index) => (
+                    {StoreStatesTasks.map((Task, index) => (
                         <thead className="thead-dark">
                         <tr key={index}>
                             <th>{index}</th>

@@ -1,8 +1,9 @@
 import React, {useEffect, Component, ChangeEvent} from 'react';
 import axios from "axios";
 import './css_files/Table.css'
-import {Provider} from "react-redux";
+import {Provider, useSelector} from "react-redux";
 import store from "./Redux/Store";
+import {getAllUsers} from "./Redux/Reducer";
 interface User{
     name: string;
     id: string;
@@ -24,7 +25,7 @@ export const TableComponent= () =>{
         searchBerText: ""
     }
     const [showState, setState] = React.useState(State);
-
+    const usersFromStore = useSelector(getAllUsers);
     useEffect(() => {
         axios.get("http://localhost:9090/List").then((response) => {
             setState((prevState) =>({
