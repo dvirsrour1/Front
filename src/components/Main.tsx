@@ -12,12 +12,16 @@ import {TasksTableComponent} from "./TasksTableComponent";
 import {TableComponent} from "./TableComponent";
 import {DeleteUserPopup} from "./DeleteUserPopup";
 import {DeleteTaskPopup} from "./DeleteTaskPopup";
+import {useAppDispatch} from "./Redux/Store";
+import {getTasks, getUsers} from "./Redux/Reducer";
 
 export const Main  =() =>{
     const [showUsersTable, setShowUsersTable] = useState(false);
     const [showTasksTable, setShowTasksTable] = useState(false);
-
+    const [showClosingButtonClicked, setShowClosingButtonClicked] = useState("Header_animation 2s forwards, Flow_animation 3s forwards");
+    const dispatch = useAppDispatch();
     function CloseTable(){
+
         const Header = document.getElementById('Header') as HTMLElement;
                 Header.style.animationName = 'Header_animation_allUsers_false'
                 const Table = document.getElementById('Table') as HTMLElement;
@@ -32,18 +36,28 @@ export const Main  =() =>{
                 closeButton.style.animationIterationCount = 'forwards'
                 closeButton.style.animationFillMode = '1'
 
+        setTimeout(()=>{
+            if(showUsersTable)
+                setShowUsersTable(false);
+            if(showTasksTable)
+                setShowTasksTable(false);
+        }, 2500)
+        setShowClosingButtonClicked("Header_animation 0s forwards")
+
     }
 
 
-    function ShowUsersTable(type: any) {
-        if(type === 'USER')
+    function ShowUsersTable(type: string) {
+        if(type == 'USER')
         {
-            setShowUsersTable(!showUsersTable);
+            dispatch(getUsers)
+            setShowUsersTable(true);
             setShowTasksTable(false);
         }
-        else if(type === 'TASK')
+        else if(type == 'TASK')
         {
-            setShowTasksTable(!showTasksTable);
+            dispatch(getTasks)
+            setShowTasksTable(true);
             setShowUsersTable(false);
 
         }
@@ -56,7 +70,7 @@ export const Main  =() =>{
                     {(showUsersTable || showTasksTable) ?<button className="button btn_of_closing" onClick={CloseTable} id='CloseButton'>Close Table Button</button>: null}
 
                     <h1 className="Header" id='Header' style={{
-                        animation: (showUsersTable || showTasksTable) ? "Header_animation_allUsers_true 2s forwards" : "Header_animation 2s forwards, Flow_animation 3s forwards",
+                        animation: (showUsersTable || showTasksTable) ? "Header_animation_allUsers_true 2s forwards" : showClosingButtonClicked,
                         color: "coral"
                     }}>Welcome to our HTTP System!</h1>
 

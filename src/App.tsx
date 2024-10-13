@@ -4,7 +4,7 @@ import './App.css';
 import Main from "./components/Main";
 import {useDispatch, useSelector} from "react-redux";
 import {useAppDispatch} from "./components/Redux/Store";
-import {getAllUsers, getTasks, getUsers} from "./components/Redux/Reducer";
+import {getTasks, getUsers} from "./components/Redux/Reducer";
 
 function App() {
     const dispatch = useAppDispatch();

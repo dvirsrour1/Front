@@ -103,7 +103,7 @@ export const TaskAddingPopup  =() => {
                     taskDescription: showState.description
                 }
                 dispatchAsynce(addTasksToServer(newTask));
-                dispatch(addTask(newTask))
+                dispatch(addTask(newTask));
                 setState((prevState) => ({
                     ...prevState,
                     isModalOpen: false

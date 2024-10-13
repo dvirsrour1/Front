@@ -6,13 +6,11 @@ import axios from "axios";
 import {useDispatch, useSelector} from "react-redux";
 import reducer, {
     addTask, changeUserDes,
-    getAllUsers,
-    getStateStatus,
     getUsers,
     showlist,
     updateUserDescriptionServer
 } from "./Redux/Reducer";
-import {useAppDispatch} from "./Redux/Store";
+import {getStatus, useAppDispatch} from "./Redux/Store";
 
 interface UserUpdating{
     userId:string;
@@ -27,7 +25,7 @@ interface State{
 }
 
 export const UpdateUserPopup = () =>{
-    const reduxStatus = useSelector(getStateStatus);
+    const reduxStatus = getStatus();
     const dispatch = useAppDispatch();
     const state: State = {
         isModalOpen: false,

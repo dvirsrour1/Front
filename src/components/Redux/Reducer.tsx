@@ -14,7 +14,9 @@ interface Task{
     idOfUser: number;
     taskDescription: string;
 }
-
+interface UserId{
+    id: string;
+}
 interface nameOfTaskObject{
     nameOfTask: string;
 }
@@ -37,10 +39,10 @@ interface UserUpdating{
     description: string;
 }
 export const deleteUserFromServer =
-    createAsyncThunk('users/deleteUser', async (id: string) =>{
+    createAsyncThunk('users/deleteUser', async (Userid: UserId) =>{
         try {
-            console.log('http://localhost:9090/DeleteUser/' + id)
-            const response = await axios.delete(`http://localhost:9090/DeleteUser/${id}`);
+            console.log('http://localhost:9090/DeleteUser/' + Userid.id)
+            const response = await axios.delete(`http://localhost:9090/DeleteUser/${Userid.id}`);
             return response.data;
         }catch (error){
             return error
@@ -112,7 +114,7 @@ export const deleteTasksFromServer = createAsyncThunk(
     }
 )
 const SliceUsers = createSlice({
-    name: 'users',
+    name: 'users', // part of the store
     initialState,
     reducers:{
         updateUsers: (state) => {
@@ -138,6 +140,12 @@ const SliceUsers = createSlice({
                if(state.users[i].id == action.payload){
                    state.users.splice(i,1);
                }
+            }
+            for(let i = 0; i < state.tasks.length; i++){
+                if(state.tasks[i].idOfUser == parseInt(action.payload))
+                {
+                    state.tasks.splice(i,1);
+                }
             }
         },
         getUsersToState:(state) =>{
@@ -185,15 +193,17 @@ const SliceUsers = createSlice({
           //  getUsers();
             state.users = action.payload
             console.log(state.users)
+            console.log(initialState.users)
         }).addCase(getUsers.rejected || addUserToServer.rejected || updateUserDescriptionServer.rejected || getTasks.rejected || addTasksToServer.rejected || deleteUserFromServer.rejected || deleteTasksFromServer.rejected, (state, action) => {
             state.status = 'rejected'
         }).addCase(addUserToServer.fulfilled || deleteTasksFromServer.fulfilled || deleteUserFromServer.fulfilled, (state, action) => {
             state.status = 'fulfilled';
             console.log('finish')
+
         }).addCase(getTasks.fulfilled, (state, action) => {
             state.status = 'fulfilled';
             state.tasks = action.payload;
-            console.log(state.tasks)
+            console.log(initialState.tasks)
             console.log('Reducer')
         }).addCase(addTasksToServer.fulfilled, (state, action) => {
             state.status = 'fulfilled';
@@ -201,13 +211,10 @@ const SliceUsers = createSlice({
             alert('Task added successfully')
         })
     }
+
 })
-export const getAllUsers = () =>{return initialState.users}
 export const getStateStatus = () =>{return initialState.status}
-export const getStateError = () =>{ return initialState.error}
-export const getTasksFromState = () =>{
-    console.log(initialState.tasks)
-    return initialState.tasks
-}
+
+
 export const {addUser, deleteUser, showlist, updateUsers,addTask, changeUserDes,deleteTask} = SliceUsers.actions;
 export default SliceUsers.reducer;

@@ -4,13 +4,16 @@ import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
 import axios from "axios";
 import {useDispatch, useSelector} from "react-redux";
-import {useAppDispatch} from "./Redux/Store";
-import {deleteUser, deleteUserFromServer, getStateStatus} from "./Redux/Reducer";
+import {getStatus, useAppDispatch} from "./Redux/Store";
+import {deleteUser, deleteUserFromServer} from "./Redux/Reducer";
 
 interface State{
     thereIsAnError: boolean;
     isModalOpen: boolean;
     UsersId: string;
+}
+interface UserId{
+    id: string;
 }
 export const DeleteUserPopup = () =>{
     const dispatch = useAppDispatch();
@@ -20,7 +23,7 @@ export const DeleteUserPopup = () =>{
         UsersId: '',
     };
     const [showState, setState] = React.useState(state)
-    const Status = useSelector(getStateStatus);
+    const Status = getStatus();
     const handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
         setState((prevState) =>({
             ...prevState,
@@ -54,8 +57,17 @@ export const DeleteUserPopup = () =>{
         }
 
         else {
-            console.log(state.UsersId)
-            dispatch(deleteUserFromServer(state.UsersId));
+            const userId: UserId ={
+                id: showState.UsersId
+            }
+            console.log(userId.id)
+            dispatch(deleteUserFromServer(userId)).then(
+                () =>{
+                    alert('User deleted successfully.')
+                    dispatch(deleteUser(userId.id))
+                }).catch(()=>{
+                alert('User deleting has failed.')
+            })
             if(Status !=='rejected')
             {
                 dispatch(deleteUser(state.UsersId))

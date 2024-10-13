@@ -3,8 +3,8 @@ import Modal from "react-bootstrap/Modal";
 import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
 import axios from "axios";
-import {deleteTask, deleteTasksFromServer, getStateStatus, showlist} from "./Redux/Reducer";
-import {useAppDispatch} from "./Redux/Store";
+import {deleteTask, deleteTasksFromServer, showlist} from "./Redux/Reducer";
+import {getStatus, useAppDispatch} from "./Redux/Store";
 import {useDispatch, useSelector} from "react-redux";
 
 interface State{
@@ -33,7 +33,7 @@ export const DeleteTaskPopup =()=>{
     }
     const dispatchAsync = useAppDispatch();
     const dispatch = useDispatch();
-    const StateOfStore = useSelector(getStateStatus)
+    const StateOfStore = getStatus();
     const ChangeState = () =>{
         setState((prevState) =>({
             ...prevState,

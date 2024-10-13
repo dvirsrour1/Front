@@ -1,11 +1,10 @@
-import React, {Component, Dispatch, useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import Modal from 'react-bootstrap/Modal';
 import {Button} from "react-bootstrap";
 import './css_files/Popup.css'
 import userIcon from './user.png'
-import {useDispatch, useSelector} from "react-redux";
-import {addUser, getUsers, getStateStatus, showlist, updateUsers, addUserToServer} from "./Redux/Reducer";
-import {useAppDispatch} from "./Redux/Store";
+import {addUser, addUserToServer} from "./Redux/Reducer";
+import {getStatus, getUsersFromStore, useAppDispatch} from "./Redux/Store";
 
 interface State{
     thereIsAnError: boolean;
@@ -23,7 +22,7 @@ interface User{
 
 export const UserAddingPopup = () =>{
     const dispatch = useAppDispatch();
-    const reduxStatus = useSelector(getStateStatus);
+    const reduxStatus = getStatus();
     const state: State ={
         thereIsAnError: false,
         isModalOpen: false,
@@ -106,7 +105,8 @@ export const UserAddingPopup = () =>{
             if(reduxStatus !== 'rejected')
             {
                 alert("User added successfully");
-                //dispatch(addUser(newUser))
+                console.log(getUsersFromStore());
+                dispatch(addUser(newUser))
                 setState((prevState) =>({
                     ...prevState,
                     isModalOpen: false

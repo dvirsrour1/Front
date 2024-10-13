@@ -1,9 +1,7 @@
 import React, {useEffect, Component, ChangeEvent} from 'react';
-import axios from "axios";
 import './css_files/Table.css'
-import {Provider, useSelector} from "react-redux";
-import store from "./Redux/Store";
-import {getAllUsers} from "./Redux/Reducer";
+import store, {getUsersFromStore, useAppDispatch} from "./Redux/Store";
+import {getUsers} from "./Redux/Reducer";
 interface User{
     name: string;
     id: string;
@@ -18,40 +16,29 @@ interface ArrayOfUsers{
 }
 
 export const TableComponent= () =>{
+    const dispatch = useAppDispatch();
     const State: ArrayOfUsers = {
         showTable: 1
-        ,UsersArray: [],
+        ,UsersArray: getUsersFromStore(),
         UsersArrayHelper:[],
         searchBerText: ""
     }
     const [showState, setState] = React.useState(State);
-    const usersFromStore = useSelector(getAllUsers);
     useEffect(() => {
-        axios.get("http://localhost:9090/List").then((response) => {
-            setState((prevState) =>({
-                ...prevState,
-                UsersArray: response.data
-            }))
-            console.log(showState.UsersArray);
-        }).catch((error) => {
-            console.log(error);
-        })
+        setState((prevState) =>({
+            ...prevState,
+            UsersArray: getUsersFromStore()
+        }))
     },[showState.showTable])
 
     useEffect(() =>{
         if(showState.searchBerText === ''){
-            axios.get("http://localhost:9090/List").then((response) => {
-                setState((prevState) =>({
-                    ...prevState,
-                    UsersArray: response.data,
-                    UsersArrayHelper:[]
+            setState((prevState) => ({
+                ...prevState,
+                UsersArray: getUsersFromStore(),
+                UsersArrayHelper:[]
+            }))
 
-
-                }))
-                console.log(showState.UsersArray);
-            }).catch((error) => {
-                console.log(error);
-            })
         }
     }, [showState.searchBerText])
 
@@ -64,7 +51,7 @@ export const TableComponent= () =>{
     }
 
     const searchButtonClicked = () => {
-        showState.UsersArray.map((User,index)=>{
+        showState.UsersArray.map((User)=>{
             if(User.name===showState.searchBerText)
             {
                 showState.UsersArrayHelper.push(User)
@@ -96,7 +83,7 @@ export const TableComponent= () =>{
                     </thead>
                     {showState.UsersArray.map((User, index) => (
                         <thead className="thead-dark">
-                        <tr key={index}>
+                        <tr key={User.id}>
                             <th>{index}</th>
                             <td>{User.name}</td>
                             <td>{User.id}</td>
