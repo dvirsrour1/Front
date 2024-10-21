@@ -3,11 +3,9 @@ import Modal from 'react-bootstrap/Modal';
 import {Button} from "react-bootstrap";
 import './css_files/Popup.css'
 import userIcon from './user.png'
-import axios from "axios";
-import {createDispatchHook, Provider} from "react-redux";
-import {addTask, addTasksToServer, addUser, showlist} from "./Redux/Reducer";
+import {addTask, addTasksToServer} from "./Redux/Reducer";
 import {useDispatch} from "react-redux";
-import store, {useAppDispatch} from "./Redux/Store";
+import {useAppDispatch} from "./Redux/Store";
 
 interface State{
     thereIsAnError: boolean;
@@ -16,28 +14,17 @@ interface State{
     nameOfTask: string;
     description: string;
     errorMessage: string;
-}
+} // State interface
 interface Task{
     taskName: string;
     idOfUser: number;
     taskDescription: string;
-}
+} // Task interface
 
-interface User{
-    name: string;
-    id: string;
-    description: string;
-}
-interface State{
-    thereIsAnError: boolean,
-    isModalOpen: boolean,
-    nameOfTask: string,
-    description: string,
-    idOfUser: string,
-    errorMessage:string
-}
+
 export const TaskAddingPopup  =() => {
     {
+        //const's
         const State: State = {
             thereIsAnError: false,
             isModalOpen: false,
@@ -47,29 +34,25 @@ export const TaskAddingPopup  =() => {
             errorMessage: ''
         }
         const [showState, setState] = React.useState(State);
-        const ChangeState = () => {
-            setState((prevState) => ({
-                ...prevState,
-                isModalOpen: !prevState.isModalOpen
-            }));
-        }
         const dispatchAsynce = useAppDispatch();
         const dispatch = useDispatch();
 
-        const userNameHasNumbers = (nameOfUser: string): boolean => {
-            for (let i = 0; i < nameOfUser.length; i++) {
-                if (parseInt(nameOfUser.charAt(i))) {
-                    return true
-                }
-            }
-            return false;
-        }
 
-        const somethingIsNull = (): boolean => {
+        const openClosePopup = () => {
+            if(!showState.errorMessage)
+            {
+                setState((prevState) => ({
+                    ...prevState,
+                    isModalOpen: !prevState.isModalOpen
+                }));
+            }
+
+        }
+        const oneOrMoreParameterAreNull = (): boolean => {
             if (showState.nameOfTask === '') {
                 setState((prevState) => ({
                     ...prevState,
-                    errorMessage: 'User name is required'
+                    errorMessage: 'Task name is required'
                 }))
                 return true
             }
@@ -88,15 +71,60 @@ export const TaskAddingPopup  =() => {
                 return true
             }
             return false;
-        }
-        const PrintAndChangeState = () => {
-            if (somethingIsNull()) {
+        } //check if all the parameters are not empty
+        const userNameHasNumbers = (nameOfUser: string): boolean => {
+            for (let i = 0; i < nameOfUser.length; i++) {
+                if(parseInt(nameOfUser.charAt(i))===0) {
+                    return true
+                }
+                if (parseInt(nameOfUser.charAt(i))) {
+                    return true
+                }
+            }
+            return false;
+        } //returns true if nameOfUser has numbers
+        const clientInputCheck = ():boolean =>{
+            if(isNaN(parseInt(showState.idOfUser,10)))
+            {
+                setState((prevState) =>({
+                    ...prevState,
+                    thereIsAnError: true,
+                    errorMessage:'ID cannot have letters',
+                }))
+                console.log('true1')
+                return true
+            }
+            if( oneOrMoreParameterAreNull())
+            {
+                setState((prevState) =>({
+                    ...prevState,
+                    thereIsAnError:true,
+                    errorMessage: 'Fill all parameters'
+                }))
+                console.log('true2')
+                return true
+            }
+            if (userNameHasNumbers(showState.nameOfTask)) {
+                setState((prevState) =>({
+                    ...prevState,
+                    thereIsAnError:true,
+                    errorMessage: 'Task name cannot have numbers'
+                }))
+                console.log('true3')
+                return true
+            }
+
+            return false
+        } // Checks the User's input before submitting it
+
+        const checkStateAndSubmit = () => {
+            if (oneOrMoreParameterAreNull() && !clientInputCheck()) {
                 setState((prevState) => ({
                     ...prevState,
                     thereIsAnError: true
                 }))
-            } else {
-
+            }
+            else {
                 const newTask: Task = {
                     taskName: showState.nameOfTask,
                     idOfUser: parseInt(showState.idOfUser, 10),
@@ -108,9 +136,8 @@ export const TaskAddingPopup  =() => {
                     ...prevState,
                     isModalOpen: false
                 }))
-
             }
-        }
+        } //submitting
 
 
         const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,7 +145,7 @@ export const TaskAddingPopup  =() => {
                 ...prevState,
                 idOfUser: e.target.value
             }))
-        }
+        } //ID handler
 
         const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             setState((prevState) => ({
@@ -126,21 +153,20 @@ export const TaskAddingPopup  =() => {
                 nameOfTask: e.target.value
             }))
 
-        }
-
+        } //Name handler
         const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             setState((prevState) => ({
                 ...prevState,
                 description: e.target.value
             }))
-        }
+        }//Description handler
         return (
             <React.Fragment>
 
-                <button className="button" onClick={ChangeState}><span>Add new Task</span></button>
+                <button className="button" onClick={openClosePopup}><span>Add new Task</span></button>
 
 
-                <Modal show={showState.isModalOpen} onHide={ChangeState}>
+                <Modal show={showState.isModalOpen} onHide={openClosePopup}>
                     <Modal.Header closeButton></Modal.Header>
                     <Modal.Body>
                         <form>
@@ -148,7 +174,6 @@ export const TaskAddingPopup  =() => {
                             <div className='div-spaces'></div>
                             <div className='div-spaces'></div>
                             <div className='div'></div>
-                            {/*<Modal.Title className={'modal-title'}>New User</Modal.Title>*/}
                             <div className='div-spaces'></div>
                             <h1 className={'text-of-titles'}>Task name:</h1>
                             <div className='div-spaces'></div>
@@ -167,19 +192,17 @@ export const TaskAddingPopup  =() => {
                                    value={showState.description} onChange={handleDescriptionChange}></input>
                             <div className='div-spaces'></div>
                             <div className={'div-of-Error'}
-                                 style={{visibility: showState.thereIsAnError ? 'visible' : 'hidden'}}>There was a
-                                problem, please try again.
+                                 style={{visibility: showState.thereIsAnError ? 'visible' : 'hidden'}}>{showState.errorMessage}
                             </div>
                         </form>
                     </Modal.Body>
-                    <Button onClick={PrintAndChangeState}>
+                    <Button onClick={checkStateAndSubmit}>
                         Submit
                     </Button>
                 </Modal>
             </React.Fragment>
         );
-        {/*לעשות BIND לכל הפונקציות וSHOWSTATE לכל הפרמטרים של STATE, לבדוק שהכל רץ תקין ואם כן להכניס של הDISPATCH של הSLICE ולבדוק שהוא עובד*/
-        }
+
 
 
     }

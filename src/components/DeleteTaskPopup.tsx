@@ -1,21 +1,19 @@
-import React, {ChangeEvent, Component} from 'react';
+import React, {ChangeEvent} from 'react';
 import Modal from "react-bootstrap/Modal";
 import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
-import axios from "axios";
-import {deleteTask, deleteTasksFromServer, showlist} from "./Redux/Reducer";
+import {deleteTask, deleteTasksFromServer} from "./Redux/Reducer";
 import {getStatus, useAppDispatch} from "./Redux/Store";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 
 interface State{
     thereIsAnError: boolean;
     isModalOpen: boolean;
     nameOfTaskState: string;
-}
-
+} // State interface
 interface nameOfTaskObject{
     nameOfTask: string;
-}
+} // nameOfTaskObject interface
 
 export const DeleteTaskPopup =()=>{
     const state: State = {
@@ -24,40 +22,35 @@ export const DeleteTaskPopup =()=>{
         nameOfTaskState: '',
     }
     const [showState, setState] = React.useState(state)
+    const dispatchAsync = useAppDispatch();
+    const dispatch = useDispatch();
+    const StateOfStore = getStatus();
+
     const handleNameOfTaskChange = (event: ChangeEvent<HTMLInputElement>) => {
         setState((prevState) =>({
             ...prevState,
             nameOfTaskState: event.target.value
 
         }))
-    }
-    const dispatchAsync = useAppDispatch();
-    const dispatch = useDispatch();
-    const StateOfStore = getStatus();
-    const ChangeState = () =>{
+    } // NameOfTask handler
+    const openClosePopup = () =>{
         setState((prevState) =>({
             ...prevState,
             isModalOpen: !showState.isModalOpen
 
         }))
     }
+    const oneOrMoreParameterAreNull = ():boolean =>{
+        return showState.nameOfTaskState === '';
 
-    const somethingIsNull = ():boolean =>{
-        if(showState.nameOfTaskState=== '')
-        {
-            return true
-        }
-        return false
-    }
-    const PrintAndChangeState = () => {
-        if (somethingIsNull()) {
+    } //check if all the parameter fulfilled
+    const checkStateAndSubmit = () => {
+        if (oneOrMoreParameterAreNull()) {
             setState((prevState)=>({
                 ...prevState,
                 thereIsAnError: false
             }))
-        }
-
-        else {
+        } else {
 
             const nameOfTaskObject: nameOfTaskObject = {
                 nameOfTask: showState.nameOfTaskState
@@ -67,25 +60,14 @@ export const DeleteTaskPopup =()=>{
             {
                 dispatch(deleteTask(nameOfTaskObject));
             }
-           // axios.delete(`http://localhost:9090/DeleteTask`, {data: nameOfTaskObject}).then(response => {
-           //     alert(response.data)
-           // }).catch(error => {
-           //     console.log(error.message)
-           // })
-           // setState((prevState)=>({
-           //     ...prevState,
-           //     isModalOpen: false
-
-           // }))
         }
-        {/*fix the Error functionality.*/}
-    }
+    } // submitting
     return (
         <React.Fragment>
-            <button className="button" onClick={ChangeState}><span>Delete a Task</span></button>
+            <button className="button" onClick={openClosePopup}><span>Delete a Task</span></button>
 
 
-            <Modal show={showState.isModalOpen} onHide={ChangeState}>
+            <Modal show={showState.isModalOpen} onHide={openClosePopup}>
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
                     <form>
@@ -93,7 +75,6 @@ export const DeleteTaskPopup =()=>{
                         <div className='div-spaces'></div>
                         <div className='div-spaces'></div>
                         <div className='div'></div>
-                        {/*<Modal.Title className={'modal-title'}>New User</Modal.Title>*/}
                         <div className='div-spaces'></div>
                         <h1 className={'text-of-titles'}>Name of Task:</h1>
                         <div className='div-spaces'></div>
@@ -104,7 +85,7 @@ export const DeleteTaskPopup =()=>{
 
                     </form>
                 </Modal.Body>
-                <Button onClick={PrintAndChangeState}>
+                <Button onClick={checkStateAndSubmit}>
                     Submit
                 </Button>
             </Modal>

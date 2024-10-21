@@ -1,9 +1,7 @@
-import React, {ChangeEvent, Component} from 'react';
+import React, {ChangeEvent} from 'react';
 import Modal from "react-bootstrap/Modal";
 import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
-import axios from "axios";
-import {useDispatch, useSelector} from "react-redux";
 import {getStatus, useAppDispatch} from "./Redux/Store";
 import {deleteUser, deleteUserFromServer} from "./Redux/Reducer";
 
@@ -11,11 +9,12 @@ interface State{
     thereIsAnError: boolean;
     isModalOpen: boolean;
     UsersId: string;
-}
+} //State interface
 interface UserId{
     id: string;
-}
+} //UserId interface
 export const DeleteUserPopup = () =>{
+    //const's
     const dispatch = useAppDispatch();
     const state: State = {
         isModalOpen: false,
@@ -24,39 +23,34 @@ export const DeleteUserPopup = () =>{
     };
     const [showState, setState] = React.useState(state)
     const Status = getStatus();
+
     const handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
         setState((prevState) =>({
             ...prevState,
             UsersId: event.target.value
 
         }))
-    }
-
-
-    const ChangeState = () =>{
+    } // ID handler
+    const openClosePopup = () =>{
         setState((prevState) =>({
             ...prevState,
             isModalOpen: !showState.isModalOpen
         }))
     }
-
-    const somethingIsNull = ():boolean =>{
+    const oneOrMoreParameterAreNull = ():boolean =>{
         if(showState.UsersId=== '')
         {
             return true
         }
         return false
-    }
-    const PrintAndChangeState = () => {
-        if (isNaN(parseInt(showState.UsersId,10)) || somethingIsNull()) {
+    }//check if one or more of the parameter is null
+    const checkStateAndSubmit = () => {
+        if (isNaN(parseInt(showState.UsersId,10)) || oneOrMoreParameterAreNull()) {
             setState((prevState) =>({
                 ...prevState,
                 thereIsAnError: true
-
             }))
-        }
-
-        else {
+        } else {
             const userId: UserId ={
                 id: showState.UsersId
             }
@@ -78,15 +72,14 @@ export const DeleteUserPopup = () =>{
 
             }))
         }
-        {/*fix the Error functionality.*/}
-    }
+    } //submitting
 
     return (
         <React.Fragment>
-            <button className="button" onClick={ChangeState}><span>Delete a User</span></button>
+            <button className="button" onClick={openClosePopup}><span>Delete a User</span></button>
 
 
-            <Modal show={showState.isModalOpen} onHide={ChangeState}>
+            <Modal show={showState.isModalOpen} onHide={openClosePopup}>
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
                     <form>
@@ -103,7 +96,7 @@ export const DeleteUserPopup = () =>{
                         <div className={'div-of-Error'} style={{ visibility: showState.thereIsAnError ? 'visible' : 'hidden' }}>ID is incorrect</div>
                     </form>
                 </Modal.Body>
-                <Button onClick={PrintAndChangeState}>
+                <Button onClick={checkStateAndSubmit}>
                     Submit
                 </Button>
             </Modal>

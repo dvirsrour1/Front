@@ -1,53 +1,37 @@
-import React, {useEffect, Component, useState, ChangeEvent} from 'react';
-import axios from "axios";
+import React, {useEffect, ChangeEvent} from 'react';
 import './css_files/Table.css'
-import {useDispatch, useSelector} from "react-redux";
-import {getTasksFromStore, useAppDispatch} from "./Redux/Store";
-import {getStateStatus, getTasks} from "./Redux/Reducer";
-import App from "../App";
-import {Simulate} from "react-dom/test-utils";
-import input = Simulate.input;
+import {getTasksFromStore} from "./Redux/Store";
+
 interface Task{
     taskName: string;
     idOfUser: number;
     taskDescription: string;
-}
-interface User{
-    name: string;
-    id: string;
-    description: string;
-}
-interface AppState {
-    users: Array<User>,
-    tasks: Array<Task>,
-    status: string,
-    error: boolean
-}
-
-
+} //Task interface
 interface ArrayOfUsers{
     TaskArray: Array<Task>;
     showTable: number;
     searchBarText: string;
     TaskArrayHelper: Array<Task>;
-}
+} //ArrayOfUsers interface
+
 
 export const TasksTableComponent = () => {
+    //const's
     const state: ArrayOfUsers = {
-        showTable: 1
-        ,TaskArray: getTasksFromStore(),
+        showTable: 1,
+        TaskArray: getTasksFromStore(),
         searchBarText: "",
         TaskArrayHelper: []
     }
     const [showState, setState] = React.useState(state);
-// add search button
+
+
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) =>{
         setState((prevState) =>({
             ...prevState,
             searchBarText: e.target.value
         }))
-    }
-
+    } //searchBarText handler
     const searchButtonClicked = () => {
         for(let i = 0; i < showState.TaskArray.length; i++){
             if(showState.TaskArray[i].taskName == showState.searchBarText)
@@ -59,8 +43,7 @@ export const TasksTableComponent = () => {
             ...prevState,
             TaskArray: showState.TaskArrayHelper
         }))
-    }
-
+    } //shows only the searched Tasks when the search button clicked
     useEffect(() => {
         if(showState.TaskArrayHelper.length > 0)
         {
@@ -69,7 +52,7 @@ export const TasksTableComponent = () => {
                 TaskArray: getTasksFromStore()
             }))
         }
-    }, [showState.searchBarText]);
+    }, [showState.searchBarText]); //if the search bar is empty - shows evert task again
     return (
         <React.Fragment>
             <div className='search'>

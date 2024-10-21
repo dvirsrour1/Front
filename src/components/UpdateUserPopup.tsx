@@ -1,13 +1,9 @@
-import React, {ChangeEvent, Component} from 'react';
+import React, {ChangeEvent} from 'react';
 import Modal from "react-bootstrap/Modal";
 import userIcon from "./user.png";
 import {Button} from "react-bootstrap";
-import axios from "axios";
-import {useDispatch, useSelector} from "react-redux";
 import reducer, {
-    addTask, changeUserDes,
-    getUsers,
-    showlist,
+    changeUserDes,
     updateUserDescriptionServer
 } from "./Redux/Reducer";
 import {getStatus, useAppDispatch} from "./Redux/Store";
@@ -15,16 +11,17 @@ import {getStatus, useAppDispatch} from "./Redux/Store";
 interface UserUpdating{
     userId:string;
     description: string;
-}
+} // UserUpdating interface
 interface State{
     thereIsAnError: boolean;
     isModalOpen: boolean;
     UsersId: string;
     description:string;
     errorMessage:string;
-}
+} // State interface
 
 export const UpdateUserPopup = () =>{
+    //const's
     const reduxStatus = getStatus();
     const dispatch = useAppDispatch();
     const state: State = {
@@ -35,28 +32,27 @@ export const UpdateUserPopup = () =>{
         errorMessage: ''
     };
     const [showState, setState] = React.useState(state)
-    const handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setState((prevState) =>({
-            ...prevState,
-            UsersId: event.target.value
-        }))
-    }
 
-    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setState((prevState) =>({
-            ...prevState,
-            description: e.target.value
-        }))
-    }
 
-    const ChangeState = () =>{
+    const openClosePopup = () =>{
         setState((prevState) =>({
             ...prevState,
             isModalOpen: !prevState.isModalOpen
         }))
     }
-
-    const somethingIsNull = ():boolean =>{
+    const handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setState((prevState) =>({
+            ...prevState,
+            UsersId: event.target.value
+        }))
+    } // ID handler
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setState((prevState) =>({
+            ...prevState,
+            description: e.target.value
+        }))
+    } // Description handler
+    const oneOrMoreParameterAreNull = ():boolean =>{
         if(showState.UsersId==='')
         {
             setState((prevState) =>({
@@ -74,8 +70,8 @@ export const UpdateUserPopup = () =>{
             return true
         }
         return false;
-    }
-    const PrintAndChangeState = () => {
+    } // returns true if one more parameters are empty
+    const clientInputCheck = ():boolean =>{
         if(isNaN(parseInt(showState.UsersId,10)))
         {
             setState((prevState) =>({
@@ -83,15 +79,19 @@ export const UpdateUserPopup = () =>{
                 thereIsAnError: true,
                 errorMessage:'ID is required'
             }))
+            return true
         }
-        if (somethingIsNull()) {
+        if (oneOrMoreParameterAreNull()) {
             setState((prevState) =>({
                 ...prevState,
                 thereIsAnError: true
             }))
+            return true
         }
-
-        else {
+        return false
+    }// Checks the User input before submitting it
+    const checkStateAndSubmit = () => {
+        if(!clientInputCheck()){
 
             const UpdatingUser: UserUpdating = {
                 userId: showState.UsersId,
@@ -108,15 +108,14 @@ export const UpdateUserPopup = () =>{
                 isModalOpen: false
             }))
         }
-        {/*fix the Error functionality.*/}
-    }
+    } //submitting
 
     return (
         <React.Fragment>
-            <button className="button" onClick={ChangeState}><span>Updating a User</span></button>
+            <button className="button" onClick={openClosePopup}><span>Updating a User</span></button>
 
 
-            <Modal show={showState.isModalOpen} onHide={ChangeState}>
+            <Modal show={showState.isModalOpen} onHide={openClosePopup}>
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
                     <form>
@@ -124,7 +123,6 @@ export const UpdateUserPopup = () =>{
                         <div className='div-spaces'></div>
                         <div className='div-spaces'></div>
                         <div className='div'></div>
-                        {/*<Modal.Title className={'modal-title'}>New User</Modal.Title>*/}
                         <div className='div-spaces'></div>
                         <h1 className={'text-of-titles'}>User's Id:</h1>
                         <div className='div-spaces'></div>
@@ -137,7 +135,7 @@ export const UpdateUserPopup = () =>{
                         <div className={'div-of-Error'} style={{ visibility: showState.thereIsAnError ? 'visible' : 'hidden' }}>{showState.errorMessage}</div>
                     </form>
                 </Modal.Body>
-                <Button onClick={PrintAndChangeState}>
+                <Button onClick={checkStateAndSubmit}>
                     Submit
                 </Button>
             </Modal>

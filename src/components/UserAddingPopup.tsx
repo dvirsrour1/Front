@@ -13,16 +13,18 @@ interface State{
      newUserName: string;
      newUserDescription: string;
      errorMessage: string;
-}
+} //State of UserAddingPopup - interface
+
 interface User{
     name: string;
     id: string;
     description: string;
-}
+} //User - interface
+
+
 
 export const UserAddingPopup = () =>{
-    const dispatch = useAppDispatch();
-    const reduxStatus = getStatus();
+    //Const's
     const state: State ={
         thereIsAnError: false,
         isModalOpen: false,
@@ -31,10 +33,12 @@ export const UserAddingPopup = () =>{
         newUserDescription: "",
         errorMessage:""
     }
+    const dispatch = useAppDispatch();
+    const reduxStatus = getStatus();
     const [showState, setState] = React.useState(state);
 
 
-    const ChangeState = () =>{
+    const openClosePopup = () =>{
         setState((prevState) =>({
             ...prevState,
             isModalOpen: !prevState.isModalOpen
@@ -51,8 +55,8 @@ export const UserAddingPopup = () =>{
             }
         }
         return false;
-    }
-    const somethingIsNull = (): boolean => {
+    } //returns true if nameOfUser has numbers
+    const oneOrMoreParameterAreNull = (): boolean => {
         if (showState.newUserName === '') {
             setState((prevState) => ({
                 ...prevState,
@@ -75,10 +79,8 @@ export const UserAddingPopup = () =>{
             return true
         }
         return false;
-    }
-
-
-   const PrintAndChangeState = () => {
+    } // returns true if one more parameters are empty
+    const clientInputCheck = ():boolean =>{
         if(isNaN(parseInt(showState.newUserId,10)))
         {
             setState((prevState) =>({
@@ -86,22 +88,38 @@ export const UserAddingPopup = () =>{
                 thereIsAnError: true,
                 errorMessage:'ID cannot have letters',
             }))
-
+            return true
         }
-        if ( somethingIsNull() || userNameHasNumbers(showState.newUserName)) {
+        if( oneOrMoreParameterAreNull())
+        {
             setState((prevState) =>({
                 ...prevState,
-                thereIsAnError:true
+                thereIsAnError:true,
+                errorMessage: 'Fill all parameters'
             }))
+            return true
+        }
+        if (userNameHasNumbers(showState.newUserName)) {
+            setState((prevState) =>({
+                ...prevState,
+                thereIsAnError:true,
+                errorMessage: 'User name cannot have numbers'
+            }))
+            return true
         }
 
-        else {
+        return false
+    } // Checks the User input before submitting it
+   const checkStateAndSubmit = async () => {
+
+        if(!clientInputCheck())
+        {
             const newUser: User = {
                 name: showState.newUserName,
                 id: showState.newUserId,
                 description: showState.newUserDescription
             }
-            dispatch(addUserToServer(newUser));
+            await dispatch(addUserToServer(newUser));
             if(reduxStatus !== 'rejected')
             {
                 alert("User added successfully");
@@ -111,17 +129,21 @@ export const UserAddingPopup = () =>{
                     ...prevState,
                     isModalOpen: false
                 }))
-
-
             }
+            setState((prevState) =>({
+                ...prevState,
+                newUserId: '',
+                newUserName: '',
+                newUserDescription: ''
+            }))
         }
-    }
+    } //Submitting
     const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setState((prevState) => ({
             ...prevState,
             newUserId: e.target.value
         }))
-    }
+    } // ID handler
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setState((prevState) => ({
@@ -129,23 +151,22 @@ export const UserAddingPopup = () =>{
             newUserName: e.target.value
         }))
 
-    }
+    } // Name handler
 
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setState((prevState) => ({
             ...prevState,
             newUserDescription: e.target.value
         }))
-    }
+    } // Description handler
 
     useEffect(() =>{
-            console.log('update')
             if(userNameHasNumbers(showState.newUserName))
             {
                 setState((prevState) =>({
                     ...prevState,
                     thereIsAnError:true,
-                    errorMessage:'avoid numbers in the Name filed.'
+                    errorMessage:'Avoid numbers in the Name filed.'
                 }))
 
             }
@@ -154,7 +175,7 @@ export const UserAddingPopup = () =>{
                 setState((prevState) =>({
                     ...prevState,
                     thereIsAnError:true,
-                    errorMessage:'avoid numbers in the Name filed.'
+                    errorMessage:'Avoid numbers in the Name filed.'
                 }))
             }
             if(showState.thereIsAnError && !userNameHasNumbers(showState.newUserName))
@@ -165,17 +186,13 @@ export const UserAddingPopup = () =>{
                 }))
 
             }
-
-
-    },[showState.newUserName,showState.newUserDescription,showState.newUserId])
+    },[showState.newUserName,showState.newUserDescription,showState.newUserId])// errors while the client type
 
 
     return (
         <React.Fragment>
-            <button className="button" onClick={ChangeState}><span>Add new User</span></button>
-
-
-            <Modal show={showState.isModalOpen} onHide={ChangeState}>
+            <button className="button" onClick={openClosePopup}><span>Add new User</span></button>
+            <Modal show={showState.isModalOpen} onHide={openClosePopup}>
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
                     <form>
@@ -183,7 +200,6 @@ export const UserAddingPopup = () =>{
                         <div className='div-spaces'></div>
                         <div className='div-spaces'></div>
                         <div className='div'></div>
-                        {/*<Modal.Title className={'modal-title'}>New User</Modal.Title>*/}
                         <div className='div-spaces'></div>
                         <h1 className={'text-of-titles'}>User name:</h1>
                         <div className='div-spaces'></div>
@@ -200,7 +216,7 @@ export const UserAddingPopup = () =>{
                         <div className={'div-of-Error'} style={{ visibility: showState.thereIsAnError ? 'visible' : 'hidden' }}>{showState.errorMessage}</div>
                     </form>
                 </Modal.Body>
-                <Button onClick={PrintAndChangeState}>
+                <Button onClick={checkStateAndSubmit}>
                     Submit
                 </Button>
             </Modal>

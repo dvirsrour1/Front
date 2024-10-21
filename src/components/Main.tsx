@@ -1,10 +1,6 @@
-import React, {Component, useCallback, useState} from 'react';
-import {Buffer} from "node:buffer";
+import React, {useState} from 'react';
 import './css_files/Main.css';
 import './UserAddingPopup'
-import Table, {Button, Tab, TabPane} from "react-bootstrap";
-import axios from "axios";
-import {WritableStream} from "node:stream/web";
 import {TaskAddingPopup} from "./TaskAddingPopup";
 import {UserAddingPopup} from "./UserAddingPopup";
 import {UpdateUserPopup} from "./UpdateUserPopup";
@@ -16,10 +12,12 @@ import {useAppDispatch} from "./Redux/Store";
 import {getTasks, getUsers} from "./Redux/Reducer";
 
 export const Main  =() =>{
+    //const's
     const [showUsersTable, setShowUsersTable] = useState(false);
     const [showTasksTable, setShowTasksTable] = useState(false);
     const [showClosingButtonClicked, setShowClosingButtonClicked] = useState("Header_animation 2s forwards, Flow_animation 3s forwards");
     const dispatch = useAppDispatch();
+
     function CloseTable(){
 
         const Header = document.getElementById('Header') as HTMLElement;
@@ -43,8 +41,7 @@ export const Main  =() =>{
                 setShowTasksTable(false);
         }, 2500)
         setShowClosingButtonClicked("Header_animation 0s forwards")
-
-    }
+    } //animation function when a Table get closed
 
 
     function ShowUsersTable(type: string) {
@@ -61,7 +58,7 @@ export const Main  =() =>{
             setShowUsersTable(false);
 
         }
-    }
+    } //Table show
 
         return (
             <React.Fragment>

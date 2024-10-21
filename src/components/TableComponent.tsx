@@ -1,22 +1,21 @@
 import React, {useEffect, Component, ChangeEvent} from 'react';
 import './css_files/Table.css'
-import store, {getUsersFromStore, useAppDispatch} from "./Redux/Store";
-import {getUsers} from "./Redux/Reducer";
+import {getUsersFromStore, useAppDispatch} from "./Redux/Store";
+import {getTasks} from "./Redux/Reducer";
 interface User{
     name: string;
     id: string;
     description: string;
-}
-
+} // User interface
 interface ArrayOfUsers{
     UsersArray: Array<User>;
     UsersArrayHelper: Array<User>;
     showTable: number;
     searchBerText: any;
-}
+} // ArrayOfUsers interface
 
 export const TableComponent= () =>{
-    const dispatch = useAppDispatch();
+    //const's
     const State: ArrayOfUsers = {
         showTable: 1
         ,UsersArray: getUsersFromStore(),
@@ -24,13 +23,17 @@ export const TableComponent= () =>{
         searchBerText: ""
     }
     const [showState, setState] = React.useState(State);
+    const dispatch = useAppDispatch();
     useEffect(() => {
-        setState((prevState) =>({
-            ...prevState,
-            UsersArray: getUsersFromStore()
-        }))
-    },[showState.showTable])
-
+        const refreshTable = async () =>{
+            await dispatch(getTasks());
+            setState((prevState) =>({
+                ...prevState,
+                UsersArray: getUsersFromStore()
+            }))
+            console.log('dd')
+        }
+    },[showState.showTable]) // refresh table everytime the Table is shown
     useEffect(() =>{
         if(showState.searchBerText === ''){
             setState((prevState) => ({
@@ -40,7 +43,7 @@ export const TableComponent= () =>{
             }))
 
         }
-    }, [showState.searchBerText])
+    }, [showState.searchBerText]) //get all the Users from store when the search bar is empty
 
 
     const inputChange =(e: ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +51,7 @@ export const TableComponent= () =>{
             ...prevState,
             searchBerText: e.target.value
         }))
-    }
+    } // search bar handler
 
     const searchButtonClicked = () => {
         showState.UsersArray.map((User)=>{

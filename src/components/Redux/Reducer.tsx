@@ -1,9 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {AppDispatch, useAppDispatch} from "./Store";
-import {useDispatch} from "react-redux";
 interface User{
     name: string;
     id: string;
@@ -26,6 +23,10 @@ interface AppState {
     status: string,
     error: boolean
 }
+interface UserUpdating{
+    userId:string;
+    description: string;
+}
 
 const initialState: AppState = {
     users: [],
@@ -34,10 +35,7 @@ const initialState: AppState = {
     error: false
 }
 
-interface UserUpdating{
-    userId:string;
-    description: string;
-}
+
 export const deleteUserFromServer =
     createAsyncThunk('users/deleteUser', async (Userid: UserId) =>{
         try {
@@ -74,14 +72,6 @@ export const getTasks = createAsyncThunk('users/fetchTasks', async () => {
         return error;
     }
 })
-
-//const dispatch = useAppDispatch();
-//useEffect(()=>{
-//    if(initialState.status === 'fulfilled'){
-//        dispatch(getUsers());
-//    }
-//},[initialState.status]);
-//
 export const addUserToServer =
     createAsyncThunk('users/addUser', async (user: User) =>{
         try {
@@ -196,6 +186,7 @@ const SliceUsers = createSlice({
             console.log(initialState.users)
         }).addCase(getUsers.rejected || addUserToServer.rejected || updateUserDescriptionServer.rejected || getTasks.rejected || addTasksToServer.rejected || deleteUserFromServer.rejected || deleteTasksFromServer.rejected, (state, action) => {
             state.status = 'rejected'
+            console.log(state.status)
         }).addCase(addUserToServer.fulfilled || deleteTasksFromServer.fulfilled || deleteUserFromServer.fulfilled, (state, action) => {
             state.status = 'fulfilled';
             console.log('finish')
